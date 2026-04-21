@@ -1,0 +1,82 @@
+{
+  "version": "2.0.0",
+  "skills": [
+    {
+      "id": "code-review",
+      "human_name": "Code Review",
+      "description": "Systematic code review: quality gates, OWASP Top 10 security checks, anti-pattern detection, PR diff analysis. Triggers on PR review, code audit, security review, or quality validation.",
+      "path": ".claude/skills/code-review/SKILL.md",
+      "tags": [
+        "code-review",
+        "security",
+        "quality",
+        "owasp",
+        "pr"
+      ]
+    },
+    {
+      "id": "pull-request",
+      "human_name": "Pull Request",
+      "description": "Full PR lifecycle: branch creation, commit conventions, PR creation via gh CLI, review workflow, and merge strategy. Integrates with Law 40 branch isolation.",
+      "path": ".claude/skills/pull-request/SKILL.md",
+      "tags": [
+        "pull-request",
+        "git",
+        "gh",
+        "merge",
+        "branch"
+      ]
+    },
+    {
+      "id": "test-generation",
+      "human_name": "Test Generation",
+      "description": "Unit and integration test generation for pytest: file/class/method naming, fixtures, parametrize, async tests, monkeypatch, TDD workflow. Triggers on test writing or coverage expansion.",
+      "path": ".claude/skills/test-generation/SKILL.md",
+      "tags": [
+        "testing",
+        "pytest",
+        "unit-test",
+        "integration-test",
+        "tdd"
+      ]
+    },
+    {
+      "id": "debugging",
+      "human_name": "Debugging",
+      "description": "Systematic debugging: stack trace analysis, 5-step hypothesis-driven root cause investigation, bisection debugging, pdb usage, structured logging. Triggers on bug investigation or error analysis.",
+      "path": ".claude/skills/debugging/SKILL.md",
+      "tags": [
+        "debugging",
+        "bug",
+        "error",
+        "stack-trace",
+        "pdb"
+      ]
+    },
+    {
+      "id": "refactoring",
+      "human_name": "Refactoring",
+      "description": "Coverage-first safe refactoring: extract method, rename/move, DRY consolidation, dependency injection, constants extraction. Triggers on code cleanup, structural improvement, or tech debt reduction.",
+      "path": ".claude/skills/refactoring/SKILL.md",
+      "tags": [
+        "refactoring",
+        "cleanup",
+        "dry",
+        "extract",
+        "tech-debt"
+      ]
+    },
+    {
+      "id": "multi-agent",
+      "human_name": "Multi-Agent Architecture",
+      "description": "Framework-agnostic mapping of the 7-role governance architecture to any multi-agent system. Covers role reference, phase-to-role routing, Law 33 single-halt atomicity, Tier 1/2 JSON contract, PROTOCOL hooks, and model tier assignment.",
+      "path": ".claude/skills/multi-agent/SKILL.md",
+      "tags": [
+        "multi-agent",
+        "orchestration",
+        "agent-architecture",
+        "role-routing"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Git commit-msg hook
+# Enforces conventional-commit format, enriched single-line messages,
+set -euo pipefail
+msg_file="$1"
+
+# Strip comment lines and blank lines
+content=$(grep -v '^#' "$msg_file" | sed '/^$/d')
+line_count=$(printf '%s\n' "$content" | wc -l | tr -d ' ')
+subject=$(printf '%s\n' "$content" | head -n1)
+
+# V2.6a — Single-line rule (no body, no multi-line)
+if (( line_count > 1 )); then
+  echo "REJECTED: commit message must be a single enriched sentence."
+  echo "Got $line_count non-empty lines. Merge into one line with commas."
+  exit 1
+fi
+
+# V2.6b — Format regex
+regex='^(feat|fix|refactor|docs|chore|test|perf|ci|build|style)(\(.+\))?: [A-Z].+\.$'
+if [[ ! "$subject" =~ $regex ]]; then
+  echo "REJECTED: commit subject must match conventional-commit format."
+  echo "Got: $subject"
+  echo "Example: feat: Fine tuning improvements with dataset expansion and eval harness."
+  exit 1
+fi
+
+# V2.6c — Enriched length (min 50, max 500)
+len=${#subject}
+if (( len < 50 )); then
+  echo "REJECTED: commit too terse ($len chars). Minimum 50 — enumerate all changes."
+  exit 1
+fi
+if (( len > 500 )); then
+  echo "REJECTED: commit too long ($len chars). Maximum 500 — split into separate commits."
+  exit 1
+fi
+
+# V2.7 — Main-merge prohibition (informational — actual enforcement is in block-destructive.sh)
+branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")"
+if [[ "$branch" == "master" || "$branch" == "main" ]]; then
+  echo "WARNING: committing directly on $branch. Ensure this is intentional."
+fi
+
+exit 0

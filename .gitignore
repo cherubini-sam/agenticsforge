@@ -1,0 +1,78 @@
+# Security & Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+id_rsa
+id_rsa.pub
+secrets.yaml
+
+# Data & ML
+data/
+mlruns/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env/
+.venv/
+ENV/
+build/
+dist/
+develop-eggs/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+dist/
+
+# Terraform
+.terraform/
+*.tfvars
+!*.tfvars.example
+infra/terraform/.terraform.lock.hcl
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.*
+
+# Docker
+*.log
+
+# IDE
+.idea/
+*.iws
+*.iml
+.history/
+*.code-workspace
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# Agent runtime artifacts (auto-created at runtime, never tracked)
+.claude/artifacts/*
+!.claude/artifacts/.gitignore
+
+# Personal developer overrides
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/config/
+
+# Node
+node_modules/
+
+# Jupyter
+.ipynb_checkpoints/

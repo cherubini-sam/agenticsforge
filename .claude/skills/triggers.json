@@ -1,0 +1,147 @@
+{
+  "version": "2.0.0",
+  "triggers": {
+    "code-review": {
+      "keywords": [
+        "code review",
+        "review pr",
+        "review code",
+        "security audit",
+        "owasp",
+        "quality gate",
+        "pr diff",
+        "check code"
+      ],
+      "intents": [
+        "code_review",
+        "security_audit",
+        "quality_check",
+        "pr_review"
+      ],
+      "priority": "HIGH",
+      "auto_load": false,
+      "has_skill_md": true,
+      "summary": "Systematic code review: OWASP security checks, anti-pattern detection, PR diff analysis, quality gate validation."
+    },
+    "pull-request": {
+      "keywords": [
+        "pull request",
+        "create pr",
+        "open pr",
+        "gh pr",
+        "merge branch",
+        "pr description",
+        "pr title"
+      ],
+      "intents": [
+        "create_pr",
+        "merge_branch",
+        "pr_lifecycle"
+      ],
+      "priority": "HIGH",
+      "auto_load": false,
+      "has_skill_md": true,
+      "summary": "Full PR lifecycle integrated with Law 40 branch isolation: gh pr create, commit conventions, review workflow, merge strategy."
+    },
+    "test-generation": {
+      "keywords": [
+        "write tests",
+        "generate tests",
+        "add tests",
+        "test coverage",
+        "pytest",
+        "unit test",
+        "integration test",
+        "fixture",
+        "parametrize",
+        "tdd"
+      ],
+      "intents": [
+        "test_generation",
+        "test_coverage",
+        "write_tests"
+      ],
+      "priority": "HIGH",
+      "auto_load": false,
+      "has_skill_md": true,
+      "file_globs": [
+        "tests/**/*.py",
+        "conftest.py"
+      ],
+      "summary": "pytest test generation: naming conventions, fixtures, parametrize, async tests, monkeypatch, integration test markers."
+    },
+    "debugging": {
+      "keywords": [
+        "debug",
+        "bug",
+        "error",
+        "exception",
+        "stack trace",
+        "traceback",
+        "not working",
+        "failing",
+        "pdb",
+        "breakpoint",
+        "root cause"
+      ],
+      "intents": [
+        "debug",
+        "bug_fix",
+        "error_analysis",
+        "root_cause"
+      ],
+      "priority": "HIGH",
+      "auto_load": false,
+      "has_skill_md": true,
+      "summary": "Systematic 5-step debugging: stack trace analysis, hypothesis-driven root cause, bisection, pdb, structured logging."
+    },
+    "refactoring": {
+      "keywords": [
+        "refactor",
+        "clean up",
+        "cleanup",
+        "extract method",
+        "rename",
+        "dry",
+        "tech debt",
+        "restructure",
+        "reorganize",
+        "dependency injection"
+      ],
+      "intents": [
+        "refactor",
+        "cleanup",
+        "tech_debt",
+        "restructure"
+      ],
+      "priority": "HIGH",
+      "auto_load": false,
+      "has_skill_md": true,
+      "summary": "Coverage-first safe refactoring: extract method, rename/move, DRY consolidation, dependency injection, constants extraction."
+    },
+    "multi-agent": {
+      "keywords": [
+        "multi-agent",
+        "agent architecture",
+        "orchestrator",
+        "worker agent",
+        "agent team",
+        "role routing",
+        "agent delegation",
+        "subagent",
+        "sub-agent"
+      ],
+      "intents": [
+        "agent_design",
+        "orchestration",
+        "multi_agent_implementation",
+        "build_agent",
+        "deploy_agent"
+      ],
+      "priority": "HIGH",
+      "auto_load": false,
+      "has_skill_md": true,
+      "summary": "Framework-agnostic 7-role governance architecture: role reference, phase routing, Law 33 single-halt atomicity, Tier 1/2 JSON contract, PROTOCOL hooks, model tier assignment."
+    }
+  }
+}
