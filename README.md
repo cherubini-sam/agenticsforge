@@ -17,6 +17,7 @@ A self-contained governance layer that enforces a 7-agent, 6-phase engineering p
 
 - [Agentics Forge](#agentics-forge)
   - [Table of Contents](#table-of-contents)
+  - [Preview](#preview)
   - [📖 Overview](#-overview)
     - [Highlights](#highlights)
   - [🚀 Install](#-install)
@@ -33,6 +34,12 @@ A self-contained governance layer that enforces a 7-agent, 6-phase engineering p
   - [📚 Advanced Documentation](#-advanced-documentation)
   - [🤝 Contributing](#-contributing)
   - [📄 License](#-license)
+
+---
+
+## Preview
+
+<img src="docs/screenshots/preview.png" alt="Preview" width="100%"/>
 
 ---
 
