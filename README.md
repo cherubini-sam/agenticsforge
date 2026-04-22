@@ -316,6 +316,6 @@ Contributions are welcome. Ensure all pre-commit hooks pass and commit messages 
 
 ## 📄 License
 
-This software is distributed under the [MIT License](LICENSE).
+See [LICENSE](LICENSE) for details.
 
-**Maintainer:** Samuele Cherubini — tech@scbrosgaming.com
+**Maintainer:** Samuele Cherubini — cherubini.sam@gmail.com
