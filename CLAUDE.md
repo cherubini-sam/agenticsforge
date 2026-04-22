@@ -53,7 +53,7 @@ Every turn emits Tier 1 then Tier 2 JSON as the absolute first output. Detail: `
   "model_shard": "[detected_shard_name]",
   "thinking_level": "[low|medium|high|max]",
   "language_check": "[EN|IT]",
-  "persona": "[IT-SeniorMentor|EN-SeniorPeer]",
+  "persona": "EN-SeniorPeer",
   "mode": "[Ask|Edit|Agent|Plan]",
   "loaded_skills": ["[resolved_skill_ids]"]
 }
@@ -68,7 +68,7 @@ Every turn emits Tier 1 then Tier 2 JSON as the absolute first output. Detail: `
   "task_type": "[classification]",
   "execution_mode": "[readonly|write|full]",
   "context_scope": "[narrow|medium|broad]",
-  "persona": "[IT-SeniorMentor|EN-SeniorPeer]"
+  "persona": "EN-SeniorPeer"
 }
 ```
 

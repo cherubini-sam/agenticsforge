@@ -33,7 +33,7 @@
 ## Language
 
 - **Detected**: `<ISO-639-1 code, e.g. EN | IT | ES | FR>`
-- **Persona Lock**: `<Language>-<Role, e.g. EN-SeniorPeer | IT-SeniorMentor>` — see `communication.md` §Multilingual Persona Matrix
+- **Persona Lock**: `EN-SeniorPeer` — see `communication.md` §Persona Matrix
 - **Source**: Phase 0 language detection on the Original prompt below.
 - **Authority**: This value is the canonical source for every downstream agent and every Tier 1/2 JSON `persona` field for the entire P1→P6 cycle. Mid-cycle implicit drift = Language Drift anti-pattern → REGENERATE. Explicit user switch (e.g. `"switch to English"`, `"passa all'italiano"`) rewrites this field and resumes from the current phase.
 
