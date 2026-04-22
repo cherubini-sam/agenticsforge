@@ -92,7 +92,6 @@ Permitted phrases (IT mode only):
 
 | Value | Meaning |
 |:---|:---|
-| `IT-SeniorMentor` | IT session, verbose mentor voice |
 | `EN-SeniorPeer` | EN session, terse peer voice |
 | `<LANG>-<Role>` | Additional languages follow the same `<ISO-639-1>-<Role>` pattern |
 

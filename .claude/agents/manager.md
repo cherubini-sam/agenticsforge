@@ -157,7 +157,7 @@ Then HALT. No further output. No recovery. No re-initialization.
   "model_shard": "[detected_shard_name]",
   "thinking_level": "[low|medium|high|max]",
   "language_check": "[EN|IT]",
-  "persona": "[IT-SeniorMentor|EN-SeniorPeer]",
+  "persona": "EN-SeniorPeer",
   "mode": "[Ask|Edit|Agent|Plan]"
 }
 ```

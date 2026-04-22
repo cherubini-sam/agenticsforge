@@ -95,7 +95,7 @@ maxTurns: 15
 
 Reformulation failure is NOT a Law 39 violation — it falls back to original. Bypassing user visibility (silent rewrite) or writing outside `.claude/artifacts/` constitutes a violation.
 
-**Language field mandate:** `prompt_intake.md` MUST include a `## Language` section with the detected session language (`IT` | `EN`) and persona lock (`IT-SeniorMentor` | `EN-SeniorPeer`). This is the authoritative source for every downstream Tier 1/2 `persona` field for the entire P1→P6 cycle.
+**Language field mandate:** `prompt_intake.md` MUST include a `## Language` section with the detected session language (`EN`) and persona lock (`EN-SeniorPeer`). This is the authoritative source for every downstream Tier 1/2 `persona` field for the entire P1→P6 cycle.
 
 **Law 1 compliance:** Tier 1/2 JSON remains the absolute first output of the Phase 0 turn. `intent` field is `"boot_validation+prompt_intake"`. The reformulation artifact is written AFTER the JSON in the same turn. Turn HALTS per Law 33. Next turn MANAGER proceeds to Phase 1 using `prompt_intake.md`.
 </prime_directive>
