@@ -39,7 +39,7 @@ A self-contained governance layer that enforces a 7-agent, 6-phase engineering p
 
 ## Preview
 
-<img src="docs/screenshots/preview.png" alt="Preview" width="100%" style="object-fit:cover;height:260px;"/>
+<img src="docs/screenshots/preview.png" alt="Preview" width="100%"/>
 
 ---
 
