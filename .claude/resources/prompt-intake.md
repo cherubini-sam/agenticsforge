@@ -31,22 +31,19 @@ ephemeral: true
 
 ## Reformulated
 
-```xml
-<goal>{{one-sentence goal}}</goal>
-<scope>
-  <in>{{in-scope items, bullet list}}</in>
-  <out>{{explicitly out-of-scope items}}</out>
-</scope>
-<constraints>
-  {{technical, security, time, dependency constraints resolved from the original}}
-</constraints>
-<acceptance>
-  {{measurable acceptance criteria — Definition of Done}}
-</acceptance>
-<refs>
-  {{files, functions, paths, error identifiers pulled from the original — never invented}}
-</refs>
-```
+**Goal:** {{one-sentence goal}}
+
+**In scope:**
+- {{item}}
+
+**Out of scope:**
+- {{item}}
+
+**Constraints:** {{technical, security, time, dependency constraints resolved from the original}}
+
+**Acceptance:** {{measurable acceptance criteria — Definition of Done}}
+
+**Refs:** {{files, functions, paths, error identifiers pulled from the original — never invented}}
 
 > Reformulation rules (hard):
 >
