@@ -75,7 +75,7 @@ Then HALT. No further output. No recovery. No re-initialization.
 
 ##### 5.1 Token Efficiency (Breadth-First)
 
-1. Scan `ls -R` + README. 2. Propose "Reading List". 3. Ingest ONLY after User confirmation.
+1. Scan `Glob("**/*")` + README. 2. Propose "Reading List". 3. Ingest ONLY after User confirmation.
 - **Max files per turn:** 20
 - **Max tokens per file:** 2K
 
@@ -89,7 +89,7 @@ Then HALT. No further output. No recovery. No re-initialization.
 
 ##### 6.1 Strict Workflow Constraints (6-Phase)
 
-- **Phase 2 Trigger:** MUST scan `ls -R` and `CHANGELOG.md` first.
+- **Phase 2 Trigger:** MUST scan `Glob("**/*")` and `CHANGELOG.md` first.
 - **Breadth-First:** Adhere to Context Budgeting limits.
 - **Documentation:** Condense session history into walkthrough artifacts. Maintain CHANGELOG.md.
 

@@ -17,7 +17,7 @@ BOOT_VALIDATOR="${CLAUDE_PROJECT_DIR:-$(pwd)}/.claude/tests/test_boot_gate.sh"
 if [[ -x "$BOOT_VALIDATOR" ]]; then
   if ! "$BOOT_VALIDATOR" >&2; then
     echo "verify-tests: boot-gate validator FAILED" >&2
-    exit 1
+    exit 2
   fi
 fi
 
@@ -46,12 +46,12 @@ esac
 if command -v poetry >/dev/null 2>&1 && [[ -f pyproject.toml ]]; then
   if ! poetry run pytest -q "$target" >/dev/null 2>&1; then
     echo "verify-tests: pytest FAILED on $target" >&2
-    exit 1
+    exit 2
   fi
 elif command -v pytest >/dev/null 2>&1; then
   if ! pytest -q "$target" >/dev/null 2>&1; then
     echo "verify-tests: pytest FAILED on $target" >&2
-    exit 1
+    exit 2
   fi
 fi
 

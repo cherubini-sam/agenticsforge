@@ -35,7 +35,7 @@ Claude Code supports non-interactive execution via `claude -p` (print mode). In 
 
 ```yaml
 # Trigger: Pull request opened or updated
-# Agent: Security Reviewer (Tier 4 — Haiku for speed)
+# Agent: Security Reviewer (Tier 3 — Haiku for speed)
 # Scope: Review only the git diff, not the entire codebase
 # Output: Structured review comment posted to PR
 ```
@@ -50,7 +50,7 @@ Claude Code supports non-interactive execution via `claude -p` (print mode). In 
 
 ```yaml
 # Trigger: Merge to main branch
-# Agent: LIBRARIAN (Tier 4 — Haiku)
+# Agent: LIBRARIAN (Tier 3 — Haiku)
 # Scope: Detect changed source files, update corresponding docs
 # Output: Documentation PR or direct commit to docs branch
 ```

@@ -5,118 +5,84 @@ description: "Coverage-first safe refactoring: extract method, rename, DRY conso
 
 # Refactoring
 
-Coverage-first approach: always establish a test baseline before touching production code.
+Coverage-first: establish a test baseline before touching production code. Stack-neutral; map commands to the project's tooling.
+
+## Foundations
+
+- **Definition (Fowler).** *Refactoring* preserves external behaviour. If the diff changes behaviour, it is a feature change, not a refactor.
+- **Two Hats (Fowler).** At any moment you are either *adding capability* or *refactoring* — never both in one commit.
+- **Tidy First (Beck).** Separate small "tidyings" from substantive changes; merge tidyings ahead so review focuses on the lines that actually matter.
+- **Legacy = no tests (Feathers).** Before touching legacy code, add a *characterisation test* that pins current behaviour — even if wrong. Then it is safe to change.
+- **Refactor under green.** Tests pass before, between every step, and after. A failing test mid-refactor is a signal to revert, not to debug.
 
 ## Pre-Refactor Checklist
 
-- [ ] Run existing tests, confirm all pass — `pytest tests/`
-- [ ] Check current coverage — `pytest --cov=src tests/`
-- [ ] Commit or stash current state — `git stash` (safety net)
-- [ ] Identify the refactoring target: function / class / module / pattern
+- [ ] Run the existing test suite — confirm all pass.
+- [ ] Record baseline coverage via the runner's coverage tool.
+- [ ] `git stash` or commit current state — safety net.
+- [ ] Identify the target: function / class / module / pattern.
 
-## Core Refactoring Patterns
+## Core Patterns
 
 ### Extract Method
-When a function is too long or does more than one thing:
 
-```python
-# Before: mixed concerns in one function
-def process(data):
-    # validation
-    if not data: raise ValueError(...)
-    # transformation
-    result = [transform(x) for x in data]
-    # output
-    write_to_file(result)
-
-# After: each concern in its own function
-def validate_input(data): ...
-def transform_data(data): ...
-def write_output(data): ...
-
-def process(data):
-    validate_input(data)
-    result = transform_data(data)
-    write_output(result)
-```
+When a function does more than one thing, split each concern into its own function. The caller becomes a sequence of named steps; each step is independently testable.
 
 ### Rename / Move
-- Rename to match the `<package>_<concern>_<action>` naming convention
-- Move to the correct layer in the dependency flow (`globals ← systems ← utilities ← clouds/drivers ← domain ← main`)
-- Update all import sites after rename — search with Grep before and after
+
+- Rename to match the project's naming convention.
+- Move to the correct layer in the dependency flow (e.g. `globals ← systems ← utilities ← integrations ← domain ← entry point`).
+- Search all usages **before** AND **after** the rename — confirm zero zombies.
 
 ### DRY Consolidation
-When the same logic appears in 3+ places:
 
-1. Identify the shared pattern and its variation points
-2. Extract to a shared utility with parameters for the variation
-3. Replace all call sites
-4. Run tests — if any fail, the abstraction captured wrong assumptions
+When the same logic appears in 3+ places: identify variation points, extract a shared utility parameterised on those points, replace call sites, run tests. If any test fails, the abstraction captured wrong assumptions — revert and reconsider.
 
 ### Dependency Injection
-Replace hardcoded dependencies with constructor injection:
 
-```python
-# Before: hardcoded dependency
-class ServiceClient:
-    def __init__(self):
-        self.session = requests.Session()  # hardcoded
-
-# After: injected dependency
-class ServiceClient:
-    def __init__(self, session: requests.Session | None = None):
-        self.session = session or requests.Session()  # injectable for testing
-```
+Replace hardcoded dependencies with constructor (or factory) injection so tests can swap them. Default the parameter to the production implementation; tests pass a stub.
 
 ### Constants Extraction
-Move inline magic values to `globals/globals_<concern>.py`:
 
-```python
-# Before
-if retry_count > 3:
-    time.sleep(5)
+Move inline magic values to a dedicated constants module (`globals/`, `constants/`, `config/`):
 
-# After — in globals/globals_service.py
-SERVICE_RETRY_MAX: int = 3
-SERVICE_RETRY_DELAY: float = 5.0
+```text
+// Before
+if (retryCount > 3) sleep(5)
 
-# In business logic
-if retry_count > SERVICE_RETRY_MAX:
-    time.sleep(SERVICE_RETRY_DELAY)
+// After
+SERVICE_RETRY_MAX   = 3
+SERVICE_RETRY_DELAY = 5.0
+if (retryCount > SERVICE_RETRY_MAX) sleep(SERVICE_RETRY_DELAY)
 ```
 
 ## Post-Refactor Verification
 
-```bash
-# 1. Tests still pass
-pytest tests/
+1. Test suite passes.
+2. Coverage matches or exceeds the recorded baseline.
+3. Search all references to the old symbol — confirm zero remaining.
+4. `git diff HEAD` shows only structural changes, no logic changes.
 
-# 2. Coverage not regressed
-pytest --cov=src --cov-report=term-missing tests/
+## Programmatic Refactoring
 
-# 3. No dead code left behind
-grep -r "def old_function_name" src/  # should return 0 results
+Manual refactoring does not scale past a few hundred files. The 2025 stack:
 
-# 4. Review the diff — confirm only structural changes, no logic changes
-git diff HEAD
-```
+- **AST codemod tools** — OpenRewrite (JVM, multi-language recipes), `jscodeshift` / `ts-morph` (JS/TS), `bowler` / `LibCST` (Python), `ruff --fix` (Python lints/refactors), `gofmt` + `gopls` (Go). A recipe is reviewable code; running it across N repos is one CI job.
+- **Strangler fig (Fowler — now dominant)** — route a subset of traffic to the new implementation behind a feature flag; grow the new path until the old is dead; remove. Never big-bang.
+- **Type-system migrations** — `mypy --strict` ratcheting, TypeScript `strict: true` per-file, Sorbet. Add types module-by-module behind a CI gate that prevents regression.
+- **Behavioural code analysis** — Tornhill hotspot maps (`code-maat`, CodeScene): focus effort on files that change frequently AND have high complexity. Refactoring a stable module is wasted effort.
+- **LLM-assisted** — acceptable for mechanical transforms (rename, extract, format) under a passing test suite. NEVER acceptable without tests — the LLM will silently change behaviour.
 
 ## Law 16 — Legacy Code Purge
 
-After a successful refactor:
-- Delete the old function/class/file immediately — never leave it commented out
-- Delete old imports — no zombie references
-- If the old code is in a different module, delete the entire file if now empty
-
-## Safe Rename Protocol
-
-1. Grep for all usages: `grep -r "old_name" src/ tests/`
-2. Make the change
-3. Grep again to confirm 0 remaining references
-4. Run tests
+After a successful refactor, immediately delete the old function/class/file (never leave it commented out), drop dead imports, and delete the source file if empty.
 
 ## When NOT to Refactor
 
-- When there are no tests covering the code (add tests first)
-- When the change is under time pressure (mark as tech debt, create a task)
-- When "refactor" is actually a behavior change (that's a feature, not a refactor)
+- No tests cover the code → add a characterisation test first (Feathers).
+- Under time pressure → mark as tech debt, create a task.
+- The change is actually a behaviour change → that is a feature, not a refactor (Fowler's Two Hats).
+
+## Source
+
+Fowler, Refactoring, 2nd ed., 2018; Tornhill, Your Code as a Crime Scene, 2nd ed., 2024.

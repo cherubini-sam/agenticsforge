@@ -30,7 +30,6 @@
 
 **Anti-Pattern:** `{"text": {"content": "this is **bold**"}}` (Result: `**bold**`)
 **Guard Schema:** Use `annotations: { bold: true }`.
-**Forbidden Blocks:** Tables, Mermaid. Use Code Blocks/Lists.
 
 #### 3. RECOVERY PROTOCOLS (CIRCUIT BREAKER)
 
@@ -134,7 +133,7 @@
 
 **Symptom:** LLM orchestrating iterative API calls via natural language reasoning instead of scripts.
 **Trigger:** >3 sequential tool calls processing the same data source.
-**Guard:** Write a Python/Bash script for the data pipeline. Execute via `Bash`. Return distilled result.
+**Guard:** Write a deterministic script (in whichever language fits the project) for the data pipeline. Execute via `Bash`. Return only the distilled result.
 **Success:** Data processing happens outside LLM context.
 **Failure:** Each API call + response permanently occupies context.
 **Fallback:** Limit to 3 API calls and summarize.
@@ -163,10 +162,6 @@
 **Symptom:** `task.md` does not strictly follow `.claude/resources/task.md`.
 **Action:** SYSTEM FAILURE. Delete `task.md` and recreate it using the template EXACTLY.
 
-##### Anti-Pattern: The Phase Consolidated (Law 33 Violation)
-
-**Symptom:** Agent attempts Phase 2 (Research) and Phase 3 (Plan) in the same turn.
-**Action:** STOP after Phase 2. Require a new JSON rotation for Phase 3. Consolidation is FORBIDDEN.
 
 </authority_matrix>
 <compliance_testing>

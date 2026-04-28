@@ -33,7 +33,7 @@
 ## Language
 
 - **Detected**: `<ISO-639-1 code, e.g. EN | IT | ES | FR>`
-- **Persona Lock**: `EN-SeniorPeer` — see `communication.md` §Persona Matrix
+- **Persona Lock**: `SeniorPeer` — see `communication.md` §Persona Matrix
 - **Source**: Phase 0 language detection on the Original prompt below.
 - **Authority**: This value is the canonical source for every downstream agent and every Tier 1/2 JSON `persona` field for the entire P1→P6 cycle. Mid-cycle implicit drift = Language Drift anti-pattern → REGENERATE. Explicit user switch (e.g. `"switch to English"`, `"passa all'italiano"`) rewrites this field and resumes from the current phase.
 
@@ -63,6 +63,7 @@
 ```
 
 > Reformulation rules (hard):
+>
 > 1. Canonical structure + XML tags above — never decorative.
 > 2. Strip zero-semantic tokens (greetings, hedging, filler, polite framing).
 > 3. Target ≥30% token reduction when the original contains filler; 0% reduction allowed when already dense (return the original verbatim in that case).
@@ -82,11 +83,11 @@
 
 ## Token Delta
 
-| Metric | Value |
-|:---|:---|
-| `original_tokens` | {{int}} |
-| `reformulated_tokens` | {{int}} |
-| `delta_pct` | {{float, negative = reduction}} |
+| Metric                | Value                           |
+| :-------------------- | :------------------------------ |
+| `original_tokens`     | {{int}}                         |
+| `reformulated_tokens` | {{int}}                         |
+| `delta_pct`           | {{float, negative = reduction}} |
 
 > **Rule:** if `delta_pct > 0` (reformulation is LONGER than original), reformulation is REJECTED and Decision is forced to `USE_ORIGINAL`.
 

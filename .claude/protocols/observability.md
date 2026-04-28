@@ -74,7 +74,7 @@ This field is **advisory** — omission is NOT a Law 1 violation. It enables reg
 
 #### 4. OpenTelemetry Environment Variables
 
-Claude Code emits OTel traces, metrics, and logs when the following env vars are set. All three surfaces (CLI, VS Code extension, macOS app) share the same wire protocol, but each surface sources env vars differently.
+Claude Code emits OTel traces, metrics, and logs when the following env vars are set. All supported surfaces (CLI, VS Code extension, JetBrains plugin) share the same wire protocol and source env vars from the login shell.
 
 **Required env vars:**
 
@@ -92,19 +92,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 | :--- | :--- | :--- |
 | CLI (zsh/bash) | Reads shell env directly from `~/.zshrc` / `~/.bashrc` | `export` lines in shell rc |
 | VS Code extension | Inherits parent shell env when launched from a terminal session | No extra setup if VS Code launched via `code` from a login shell |
-| macOS app (Finder launch) | Does **NOT** inherit shell env — requires `launchctl setenv` | Add to `~/.zprofile` |
-
-**Canonical `~/.zprofile` block for macOS app parity:**
-
-```bash
-launchctl setenv CLAUDE_CODE_ENABLE_TELEMETRY 1
-launchctl setenv OTEL_METRICS_EXPORTER otlp
-launchctl setenv OTEL_LOGS_EXPORTER otlp
-launchctl setenv OTEL_EXPORTER_OTLP_PROTOCOL http/protobuf
-launchctl setenv OTEL_EXPORTER_OTLP_ENDPOINT http://localhost:4318
-```
-
-**Verification:** After setup, `launchctl getenv CLAUDE_CODE_ENABLE_TELEMETRY` must return `1` in a Finder-launched terminal.
+| JetBrains plugin | Inherits parent shell env when IDE launched from terminal | No extra setup if JetBrains launched via CLI from a login shell |
 
 </axiom_core>
 <authority_matrix>

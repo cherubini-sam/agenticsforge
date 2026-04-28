@@ -16,13 +16,11 @@
 
 <scope>Defines serialization constraints on the output stream to preserve Law 1 (Transparency Lock) against native model tool-call prioritization.</scope>
 
-### Race Condition Fix (Law 1 Preservation)
-
-The `task_boundary` tool is aggressively prioritized by the native model. To preserve Law 1 (Transparency Lock), artificially delay the tool call.
+### Output Stream Serialization Rule
 
 Treat the output stream as a serialized pipe: `[JSON_BLOCK] + [NEWLINE] + [TOOL_CALL]`
 
-**Forbidden:** Calling a tool as the very first token. The first token MUST be the backtick `` ` `` of the JSON block.
+**Forbidden:** Calling a tool as the very first token. The first token MUST be the opening backtick `` ` `` of the Tier 1 JSON fence.
 
 **Enforcer:** TARGET AGENT | **Detection:** MANAGER (Audit Trail).
 
@@ -103,7 +101,7 @@ When a task can be accomplished by multiple tool types, prefer in this order:
 For tasks involving large datasets, iterative API pagination, or complex data transformations:
 
 - **FORBIDDEN:** Orchestrating multi-step data loops via LLM natural language reasoning. This creates massive context bloat.
-- **REQUIRED:** Write deterministic Python or Bash scripts to handle loops, conditionals, and transformations. Execute via `Bash`. Return only the final distilled result.
+- **REQUIRED:** Write deterministic scripts (in whichever language is appropriate to the project — shell, Python, Node, etc.) to handle loops, conditionals, and transformations. Execute via `Bash`. Return only the final distilled result.
 
 #### MCP Schema Mitigation
 

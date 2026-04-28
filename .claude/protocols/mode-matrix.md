@@ -51,8 +51,7 @@ Response to User
 > You cannot proceed to the next Phase in the same turn.
 
 > [!NOTE]
-> This is a SINGLE LLM turn, not multi-process delegation.
-> The "switch" is conceptual persona adoption within the same context.
+> **In-context routing** (MANAGER reads target agent `.md` and adopts its persona within the same turn) is a single LLM context with no subprocess. **Agent-tool routing** (MANAGER calls the `Agent` tool) spawns a real isolated subprocess with an independent context window — this IS multi-process delegation. The flow diagram above depicts in-context routing. For Agent-tool delegation, the sub-agent returns only to the orchestrator; it cannot communicate with sibling agents directly.
 
 #### 3. ANTI-PATTERN: DIRECT MANAGER EXECUTION
 

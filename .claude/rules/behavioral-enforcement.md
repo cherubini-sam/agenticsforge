@@ -47,6 +47,7 @@ The `.gitignore` blanket-excludes `.claude/artifacts/` — never narrow this exc
 | Protocol skipped for "meta-task" rationalization | SESSION TERMINATION (Law 39) |
 | Artifact committed to git | REJECT; revert immediately |
 | `.gitignore` narrowed for `.claude/artifacts/` | REJECT; restore blanket exclusion |
+| `Agent`/`Task` tool call without preceding `sub_agent_spawn` JSON block | BLOCK at `enforce-spawn-transparency.sh` (Law 1 extension) |
 
 </authority_matrix>
 <compliance_testing>

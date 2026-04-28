@@ -7,6 +7,21 @@ description: "Full PR lifecycle: branch creation, commits, PR creation via gh CL
 
 Integrates directly with the protocol's Law 40 branch isolation model.
 
+## Foundations
+
+- **Short-lived branches outperform long-lived ones.** Trunk-Based Development and DORA *Accelerate* both find elite teams merge to trunk multiple times per day, with branches living hours not weeks. Long-lived branches accumulate merge debt and shrink the window in which CI feedback is actionable.
+- **Pick one workflow and stay in it.** GitFlow suits versioned product releases with parallel maintenance lines. GitHub Flow / Trunk-Based suits continuously deployed services. Mixing produces the worst of both.
+- **The PR is a unit of review, not a unit of work.** ~200–400 changed lines is the empirical sweet spot for review effectiveness. Large PRs are a process smell, not a constraint to respect.
+- **Branch isolation is mechanical.** Law 40 forbids agent writes to `main`/`master`; the destructive-guard hook enforces it. Promotion to main is a human-only operation.
+
+## PR Velocity
+
+- **Merge queues** — GitHub merge queue, Mergify, Aviator. Serialise merges, re-run required checks against the post-merge tree, prevent the "green-PR-red-main" race common with parallel merges.
+- **Stacked PRs** — Graphite, Sapling (Meta), `git absorb`, `spr`. One feature broken into a chain of 3–7 small dependent PRs; each reviewed independently; merge in stack order. Replaces the 2K-line "everything PR" anti-pattern.
+- **Release automation** — Changesets (Node monorepos), `release-please` (Google, multi-language), `semantic-release`. Conventional commits drive auto-generated CHANGELOG + version bump + tag at merge time.
+- **Branch protection rules** — require PR, require linear history, require ≥1 review, require status checks (CI green + merge-queue clean), required signed commits for production branches.
+- **AI-generated summaries** — acceptable as a first draft; never as the final body. The author still owns the "why" — diffs show the "what."
+
 ## Branch → PR → Merge Flow
 
 ```
@@ -85,3 +100,7 @@ git push origin --delete {operation}/{slug}
 | `gh pr checks` | Show CI status |
 | `gh pr merge --no-ff` | Merge (human only) |
 | `gh pr close` | Close without merging |
+
+## Source
+
+Forsgren et al., Accelerate, 2018; DORA, State of DevOps Report, 2024.

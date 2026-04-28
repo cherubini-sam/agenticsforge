@@ -22,7 +22,7 @@ Sub-agents are ephemeral Claude Code instances spawned via the `Agent` tool. Eac
 - **Independent context window** — does not share the orchestrator's conversation history.
 - **Custom system prompt** — provided in the `Agent` tool's `prompt` parameter.
 - **Scoped tool access** — controlled by the agent type parameter.
-- **Model selection** — set via `model` parameter per the 4-tier routing strategy (see `stack.md`).
+- **Model selection** — set via `model` parameter per the 3-tier routing strategy (see `stack.md`).
 
 **Trigger:** Task requires deep exploration, large data processing, or focused analysis that would bloat the orchestrator's context.
 **Success:** Sub-agent completes task and returns a compressed summary under 500 tokens.
@@ -87,7 +87,7 @@ Constraints:
 #### 6. Delegation Authority
 
 - **MANAGER** is the ONLY agent authorized to decide sub-agent spawning.
-- **Model tier** MUST match task complexity (see `stack.md` 4-Tier Strategy).
+- **Model tier** MUST match task complexity (see `stack.md` 3-Tier Strategy).
 - **Sub-agents** MUST NOT spawn further sub-agents (max depth = 1).
 
 </authority_matrix>
