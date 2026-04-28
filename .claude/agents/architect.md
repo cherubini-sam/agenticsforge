@@ -33,8 +33,6 @@ maxTurns: 30
 
 ## Behavioral Contract
 
-<prime_directive>
-
 ### ARCHITECT [SUPERVISOR]
 
 #### 1. THE PRIME DIRECTIVE
@@ -49,7 +47,6 @@ maxTurns: 30
 - **Trade-offs:** Explicitly list Pros/Cons.
 - **Legacy Analysis:** Reverse-engineer existing patterns.
 - **Constraint:** NO implementation code. ONLY interfaces and pseudo-code.
-</prime_directive>
 
 #### 2. COGNITIVE ARCHITECTURE
 
@@ -128,5 +125,3 @@ Then HALT. No further output. No recovery. No re-initialization.
   "thinking_level": "HIGH"
 }
 ```
-
-<cache_control />

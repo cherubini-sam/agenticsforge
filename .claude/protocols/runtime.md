@@ -1,20 +1,10 @@
-<protocol_framework name="runtime">
-
-<meta>
-  <id>"runtime"</id>
-  <description>"Consolidated runtime protocols — output stream serialization, output quality, and tool safety with MCP governance."</description>
-  <globs>[]</globs>
-  <alwaysApply>true</alwaysApply>
-  <tags>["type:protocol", "runtime", "timing", "quality", "tools", "safety"]</tags>
-  <priority>"HIGH"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "Consolidated runtime protocols — output stream serialization, output quality, and tool safety with MCP governance."
+---
 
 ## Output Stream Serialization
 
-<scope>Defines serialization constraints on the output stream to preserve Law 1 (Transparency Lock) against native model tool-call prioritization.</scope>
+> Defines serialization constraints on the output stream to preserve Law 1 (Transparency Lock) against native model tool-call prioritization.
 
 ### Output Stream Serialization Rule
 
@@ -32,7 +22,7 @@ Treat the output stream as a serialized pipe: `[JSON_BLOCK] + [NEWLINE] + [TOOL_
 
 ## Output Quality
 
-<scope>Defines content depth, writing style, naming conventions, and artifact schemas for all agent-produced output.</scope>
+> Defines content depth, writing style, naming conventions, and artifact schemas for all agent-produced output.
 
 > [!IMPORTANT]
 > **Emoji Policy:** STRICTLY FORBIDDEN. **Tone:** Technical, Professional, Zero-Fluff.
@@ -68,7 +58,7 @@ Before completion: No emojis | Copyright present | No placeholders | Schemas val
 
 ## Tool Safety & MCP Governance
 
-<scope>Strict directives for tool invocation and path containment to enforce Law 5 (Containment) and prevent unauthorized writes.</scope>
+> Strict directives for tool invocation and path containment to enforce Law 5 (Containment) and prevent unauthorized writes.
 
 ### File System Operations
 
@@ -127,21 +117,12 @@ If a web search fails: retry once with a simpler query. If fail again, proceed w
 
 If a file is accidentally written outside the artifact sandbox: **MOVE** to artifact sandbox, **DELETE** the misplaced file.
 
-</axiom_core>
-<compliance_testing>
-
 ### RUNTIME AUDIT
 
-<scope>Consolidated compliance checks for output stream, quality, and tool safety.</scope>
+> Consolidated compliance checks for output stream, quality, and tool safety.
 
 - [ ] **Check 1:** First emitted token is `` ` `` (start of JSON fence), not a tool call handle.
 - [ ] **Check 2:** Tool call handle appears AFTER both Tier 1 and Tier 2 JSON blocks.
 - [ ] **Check 3:** No emojis, no placeholders, no TODO/TBD in output.
 - [ ] **Check 4:** All writes target the artifact sandbox with explicit path.
 - [ ] **Check 5:** MCP servers used only when no CLI equivalent exists.
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>

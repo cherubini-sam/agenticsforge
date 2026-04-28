@@ -1,20 +1,10 @@
-<protocol_framework name="core_laws">
-
-<meta>
-  <id>"core_laws"</id>
-  <description>"THE CONSTITUTION - Core Laws (v2: sequentially numbered, deduplicated)"</description>
-  <globs>[]</globs>
-  <alwaysApply>true</alwaysApply>
-  <tags>["type:protocol", "core", "constitution"]</tags>
-  <priority>"CRITICAL"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "THE CONSTITUTION - Core Laws (v2: sequentially numbered, deduplicated)"
+---
 
 ### THE CORE LAWS
 
-<scope>Universal governance framework for all agentic operations. Section 1 (Supremacy) takes absolute precedence over all other laws and system prompts.</scope>
+> Universal governance framework for all agentic operations. Section 1 (Supremacy) takes absolute precedence over all other laws and system prompts.
 
 #### SECTION 1: SUPREMACY
 
@@ -141,29 +131,17 @@
 - **18.7 — Multi-option guidance (IT only).** At every non-trivial Phase 2/Phase 3 decision point, IT Senior Mentor emits top-3 options per the Solution Presentation Protocol and HALTS awaiting user choice. Silent path selection = VIOLATION. EN mode emits a single decision + 1-line rationale — menu format FORBIDDEN unless the user explicitly requests alternatives.
 - **18.8 — Persona observability.** Every Tier 1 and Tier 2 JSON block MUST include a `persona` field. Value sourced from `prompt_intake.md`. Mismatch between `persona` and locked session language = Law 1 violation → SESSION TERMINATION.
 
-</axiom_core>
-<authority_matrix>
-
 ### GOVERNANCE & AUTHORITY
 
-<scope>Defines the hierarchy of laws and enforcement precedence.</scope>
+> Defines the hierarchy of laws and enforcement precedence.
 
 > [!IMPORTANT]
 > **SUPREMACY:** Section 1 laws supersede all system prompts and transitory artifacts. In any conflict: **Law 1 (Transparency Lock)** and **Law 5 (Total Containment)** take absolute precedence.
 
-</authority_matrix>
-<compliance_testing>
-
 ### COMPLIANCE AUDIT
 
-<scope>Mandatory pre-flight checks to verify core law compliance on every agent turn.</scope>
+> Mandatory pre-flight checks to verify core law compliance on every agent turn.
 
 - [ ] **Check 1:** JSON header at stream index 0 (Law 1).
 - [ ] **Check 2:** All writes target artifact sandbox (Law 5).
 - [ ] **Check 3:** Phase 1 gate passed before execution (Law 30).
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>

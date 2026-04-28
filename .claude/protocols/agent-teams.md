@@ -1,20 +1,10 @@
-<protocol_framework name="agent_teams">
-
-<meta>
-  <id>"agent_teams"</id>
-  <description>"Agent Team coordination: initialization, file locking, task claiming, race condition prevention for Claude Code."</description>
-  <globs>[]</globs>
-  <alwaysApply>false</alwaysApply>
-  <tags>["type:protocol", "agent-teams", "collaboration", "concurrency"]</tags>
-  <priority>"MEDIUM"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "Agent Team coordination: initialization, file locking, task claiming, race condition prevention for Claude Code."
+---
 
 ### AGENT TEAM PROTOCOL
 
-<scope>Governs collaborative multi-agent execution using Claude Code Agent Teams, including initialization, task distribution, file safety, and anti-anchoring.</scope>
+> Governs collaborative multi-agent execution using Claude Code Agent Teams, including initialization, task distribution, file safety, and anti-anchoring.
 
 #### 0. HARD GATE — Default Is Single-Agent
 
@@ -84,12 +74,9 @@ Agent Teams are collaborative mesh networks of independent Claude Code instances
 - Tasks with heavy sequential dependencies (use sub-agents instead).
 - Tasks where all work touches the same files (use single agent with phase-based execution).
 
-</axiom_core>
-<authority_matrix>
-
 ### TEAM AUTHORITY
 
-<scope>Defines team lifecycle ownership and escalation paths.</scope>
+> Defines team lifecycle ownership and escalation paths.
 
 #### 6. Authority
 
@@ -97,20 +84,11 @@ Agent Teams are collaborative mesh networks of independent Claude Code instances
 - **Team members** are autonomous within their task scope but CANNOT modify files outside their locked scope.
 - **Escalation:** Any unresolvable conflict → MANAGER dissolves team and takes direct control.
 
-</authority_matrix>
-<compliance_testing>
-
 ### TEAM AUDIT
 
-<scope>Verification checks for Agent Team safety and coordination.</scope>
+> Verification checks for Agent Team safety and coordination.
 
 - [ ] **Check 1:** No two team members modified the same file.
 - [ ] **Check 2:** All task dependencies respected (no task executed before prerequisites complete).
 - [ ] **Check 3:** Team dissolved cleanly — no orphaned locks or stale tasks.
 - [ ] **Check 4:** Final output integrated and verified by Evaluator member or VALIDATOR agent.
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>

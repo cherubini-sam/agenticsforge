@@ -1,23 +1,9 @@
-<artifact_template name="prompt_intake">
-
-<meta>
-  <id>"prompt_intake"</id>
-  <description>"Strict template for the Phase 0 (b) prompt_intake.md artifact. PROTOCOL-owned. Captures the original user prompt, the Claude-optimized reformulation, token delta, fidelity score, session language, and the routing decision."</description>
-  <globs>[]</globs>
-  <alwaysApply>false</alwaysApply>
-  <tags>["type:resource", "template", "phase0", "protocol", "prompt-intake"]</tags>
-  <priority>"CRITICAL"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<instantiation_config>
-<protocol_ref>LAW-2 (Phase 0 (b)) / LAW-18 (Session Language Lock)</protocol_ref>
-<owner_role>PROTOCOL</owner_role>
-<target_path>prompt_intake.md</target_path>
-<enforcement>STRICT</enforcement>
-</instantiation_config>
-
-<content_body>
+---
+description: "Strict template for the Phase 0 (b) prompt_intake.md artifact. PROTOCOL-owned. Captures the original user prompt, the Claude-optimized reformulation, token delta, fidelity score, session language, and the routing decision."
+owner: PROTOCOL
+target_path: "prompt_intake.md"
+ephemeral: true
+---
 
 # Prompt Intake: {{Session Slug}}
 
@@ -131,16 +117,3 @@
 - **Created**: {{ISO-8601}}
 - **Cycle**: {{N}}
 - **Boot turn intent**: `boot_validation+prompt_intake`
-
-</content_body>
-<variable_dictionary>
-<placeholder>{{Session Slug}}: short kebab-case identifier for the current cycle (derived from the goal).</placeholder>
-<placeholder>{{Verbatim user prompt}}: the byte-for-byte original — never edited, never paraphrased.</placeholder>
-</variable_dictionary>
-<lifecycle_policy>
-<expiration_trigger>HARD DELETE on Phase 6 completion alongside task.md and implementation_plan.md. Fresh per cycle on Workflow Re-entry. walkthrough.md is the permanent cross-cycle record.</expiration_trigger>
-</lifecycle_policy>
-
-<cache_control />
-
-</artifact_template>

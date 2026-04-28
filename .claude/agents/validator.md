@@ -36,8 +36,6 @@ maxTurns: 30
 
 ## Behavioral Contract
 
-<prime_directive>
-
 ### VALIDATOR [SUPERVISOR]
 
 #### 1. THE PRIME DIRECTIVE
@@ -50,7 +48,6 @@ maxTurns: 30
 
 - **Test Root:** Discover and run tests from the project's configured test directory (check project config files or ask LIBRARIAN if ambiguous).
 - **Sign-Off:** Verify all tests pass, no new TODOs, and doc sync before DONE.
-</prime_directive>
 
 #### 2. COGNITIVE ARCHITECTURE
 
@@ -134,5 +131,3 @@ Then HALT. No further output. No recovery. No re-initialization.
   "thinking_level": "HIGH"
 }
 ```
-
-<cache_control />

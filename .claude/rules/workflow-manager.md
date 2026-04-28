@@ -2,23 +2,9 @@
 description: "Mandatory 6-phase industrial cycle enforcement: boot sequence (Law 2), task manifest lifecycle (Law 30), branch isolation (Law 40). Always active."
 ---
 
-<governance_logic name="workflow-manager">
-
-<meta>
-  <id>"workflow-manager"</id>
-  <description>"Mandatory industrial cycle enforcement and task manifest lifecycle."</description>
-  <globs>[]</globs>
-  <alwaysApply>true</alwaysApply>
-  <tags>["type:rule", "workflow", "manager", "phase-gate"]</tags>
-  <priority>"CRITICAL"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
-
 ### WORKFLOW AXIOMS
 
-<scope>Core boot and task manifest lifecycle rules governing all MANAGER-orchestrated sessions.</scope>
+> Core boot and task manifest lifecycle rules governing all MANAGER-orchestrated sessions.
 
 #### Protocol Boot (Law 2)
 
@@ -34,12 +20,9 @@ Phase 4 Step 0 creates the operation branch directly on the main checkout: `git 
 
 At Phase 6 close (immediately after walkthrough append and idempotent push, before ephemeral deletion), MANAGER emits a fenced `bash` code block in chat with a `HUMAN ONLY — DO NOT RUN AS AGENT` header containing the promotion+cleanup commands for the current operation branch: `git checkout master`, `git merge --no-ff {operation}/{slug} -m "chore: Merge {operation}/{slug} into master with <one-sentence summary of cycle changes>."`, `git branch -d {operation}/{slug}`, `git push origin --delete {operation}/{slug}`. The merge commit `-m` subject MUST satisfy `.githooks/commit-msg`: conventional-commit prefix (default `chore:`; never `feat(scope):` or any parenthesised scope — ZERO `(` or `)` characters permitted in the subject), single line, 50–500 chars, trailing period. The block is informational only; agents NEVER execute these commands and `block-destructive.sh` rejects any attempt.
 
-</axiom_core>
-<authority_matrix>
-
 ### WORKFLOW AUTHORITY
 
-<scope>Phase whitelist and atomicity constraints enforcing the 6-Phase Industrial Standard.</scope>
+> Phase whitelist and atomicity constraints enforcing the 6-Phase Industrial Standard.
 
 #### Phase 1 Tool Whitelist (Law 31)
 
@@ -57,20 +40,11 @@ Mechanically enforced by `enforce-phase-gate.sh`: artifact-presence gating (prom
 > [!CAUTION]
 > Protocol violations (missing JSON, wrong tool before prompt_intake.md, premature authorization request without REFLECTOR 1.00, artifact absent) → SESSION TERMINATION per CLAUDE.md. No recovery.
 
-</authority_matrix>
-<compliance_testing>
-
 ### WORKFLOW AUDIT
 
-<scope>Pre-execution checklist to verify boot integrity and phase isolation.</scope>
+> Pre-execution checklist to verify boot integrity and phase isolation.
 
 - [ ] **Check 1:** Turn 0 routed to PROTOCOL; "system_green" confirmed (Law 2).
 - [ ] **Check 2:** `task.md` present, valid, and maps current request (Law 30).
 - [ ] **Check 3:** Only whitelisted tools invoked during Phase 1 (Law 31).
 - [ ] **Check 4:** Turn structure matches Single-Halt Atomicity — P1→P4 in one segment, P5→P6 in another, sole interactive halt at P4 authorization (Law 33).
-
-</compliance_testing>
-
-<cache_control />
-
-</governance_logic>

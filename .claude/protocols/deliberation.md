@@ -1,20 +1,10 @@
-<protocol_framework name="deliberation">
-
-<meta>
-  <id>"deliberation"</id>
-  <description>"Structured deliberation via Tripartite Council model for high-stakes architectural decisions. Three independent agents debate before synthesis."</description>
-  <globs>[]</globs>
-  <alwaysApply>false</alwaysApply>
-  <tags>["type:protocol", "deliberation", "council", "consensus", "anti-anchoring"]</tags>
-  <priority>"MEDIUM"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "Structured deliberation via Tripartite Council model for high-stakes architectural decisions. Three independent agents debate before synthesis."
+---
 
 ### STRUCTURED DELIBERATION PROTOCOL
 
-<scope>Defines the Tripartite Council model for multi-perspective consensus on high-risk architectural decisions, preventing single-agent anchoring bias.</scope>
+> Defines the Tripartite Council model for multi-perspective consensus on high-risk architectural decisions, preventing single-agent anchoring bias.
 
 #### 1. When to Invoke the Council
 
@@ -133,12 +123,9 @@ Analyze this decision and provide your opinion in exactly this structure:
 Keep response under 500 tokens. Be adversarial — find what others overlook.
 ```
 
-</axiom_core>
-<authority_matrix>
-
 ### DELIBERATION AUTHORITY
 
-<scope>Defines who can invoke the council and how synthesis is governed.</scope>
+> Defines who can invoke the council and how synthesis is governed.
 
 #### 6. Authority
 
@@ -147,21 +134,12 @@ Keep response under 500 tokens. Be adversarial — find what others overlook.
 - **Model tier:** Council members use Tier 2 (Sonnet) by default. MANAGER may escalate to Tier 1 (Opus) for critical security decisions.
 - **Synthesis** is performed by MANAGER or ARCHITECT, never by a council member.
 
-</authority_matrix>
-<compliance_testing>
-
 ### DELIBERATION AUDIT
 
-<scope>Verification checks for structured deliberation compliance.</scope>
+> Verification checks for structured deliberation compliance.
 
 - [ ] **Check 1:** All 3 council members produced independent Round 1 opinions (no shared context).
 - [ ] **Check 2:** Round 2 opinions reference and challenge peer outputs.
 - [ ] **Check 3:** Hard stop enforced — no Round 3 occurred.
 - [ ] **Check 4:** Synthesis addresses all 6 checklist items.
 - [ ] **Check 5:** Final specification written to `.claude/artifacts/`.
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>

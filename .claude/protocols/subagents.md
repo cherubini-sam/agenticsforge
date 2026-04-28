@@ -1,20 +1,10 @@
-<protocol_framework name="subagents">
-
-<meta>
-  <id>"subagents"</id>
-  <description>"Sub-agent lifecycle, context isolation, semantic compression, and delegation patterns for Claude Code."</description>
-  <globs>[]</globs>
-  <alwaysApply>false</alwaysApply>
-  <tags>["type:protocol", "subagents", "delegation", "isolation"]</tags>
-  <priority>"HIGH"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "Sub-agent lifecycle, context isolation, semantic compression, and delegation patterns for Claude Code."
+---
 
 ### SUB-AGENT PROTOCOL
 
-<scope>Defines when and how to spawn sub-agents via Claude Code's `Agent` tool, ensuring context isolation and token-efficient returns.</scope>
+> Defines when and how to spawn sub-agents via Claude Code's `Agent` tool, ensuring context isolation and token-efficient returns.
 
 #### 1. Sub-Agent Architecture
 
@@ -77,12 +67,9 @@ Constraints:
 
 **Parallel rule:** Launch multiple independent sub-agents in a single message when their tasks have no dependencies.
 
-</axiom_core>
-<authority_matrix>
-
 ### SUB-AGENT AUTHORITY
 
-<scope>Defines delegation ownership and model tier assignments for sub-agent spawning.</scope>
+> Defines delegation ownership and model tier assignments for sub-agent spawning.
 
 #### 6. Delegation Authority
 
@@ -90,20 +77,11 @@ Constraints:
 - **Model tier** MUST match task complexity (see `stack.md` 3-Tier Strategy).
 - **Sub-agents** MUST NOT spawn further sub-agents (max depth = 1).
 
-</authority_matrix>
-<compliance_testing>
-
 ### SUB-AGENT AUDIT
 
-<scope>Verification checks for sub-agent lifecycle compliance.</scope>
+> Verification checks for sub-agent lifecycle compliance.
 
 - [ ] **Check 1:** Sub-agent prompt includes compression directive.
 - [ ] **Check 2:** Sub-agent return is <500 tokens (semantic summary only).
 - [ ] **Check 3:** Model tier matches task complexity.
 - [ ] **Check 4:** No sub-agent spawned for tasks requiring <3 tool calls.
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>

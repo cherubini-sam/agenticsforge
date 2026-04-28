@@ -1,23 +1,9 @@
-<artifact_template name="implementation_plan">
-
-<meta>
-  <id>"implementation_plan"</id>
-  <description>"Implementation Plan Template for Phase 3 (Planning). Required by MANAGER Phase 3 Gate before routing to ENGINEER."</description>
-  <globs>[]</globs>
-  <alwaysApply>false</alwaysApply>
-  <tags>["type:resource", "template", "plan", "phase3", "architect"]</tags>
-  <priority>"HIGH"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<instantiation_config>
-<protocol_ref>LAW-35</protocol_ref>
-<owner_role>ARCHITECT</owner_role>
-<target_path>implementation_plan.md</target_path>
-<enforcement>STRICT</enforcement>
-</instantiation_config>
-
-<content_body>
+---
+description: "Implementation Plan Template for Phase 3 (Planning). Required by MANAGER Phase 3 Gate before routing to ENGINEER."
+owner: ARCHITECT
+target_path: "implementation_plan.md"
+ephemeral: true
+---
 
 # Implementation Plan: {{Task Name}}
 
@@ -91,15 +77,3 @@
 - **Plan Created**: [ISO-8601 timestamp]
 - **Last Updated**: [ISO-8601 timestamp]
 - **Authorized By**: [User confirmation timestamp]
-
-</content_body>
-<variable_dictionary>
-<placeholder>{{Task Name}}: The title of the current mission (must match task.md).</placeholder>
-</variable_dictionary>
-<lifecycle_policy>
-<expiration_trigger>HARD DELETE on Phase 6 completion. Not archived. The walkthrough.md file is the permanent record — implementation_plan.md is ephemeral scaffolding.</expiration_trigger>
-</lifecycle_policy>
-
-<cache_control />
-
-</artifact_template>

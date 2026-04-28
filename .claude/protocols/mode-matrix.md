@@ -1,20 +1,10 @@
-<protocol_framework name="mode_matrix">
-
-<meta>
-  <id>"mode_matrix"</id>
-  <description>"MODE EXECUTION MATRIX - Reference for agent behavior across IDE modes."</description>
-  <globs>[]</globs>
-  <alwaysApply>false</alwaysApply>
-  <tags>["type:protocol", "mode", "execution", "matrix"]</tags>
-  <priority>"HIGH"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "MODE EXECUTION MATRIX - Reference for agent behavior across IDE modes."
+---
 
 ### MODE EXECUTION MATRIX
 
-<scope>Standardizes agent behavior, personas, and permission levels across the different IDE modes (Ask, Plan, Edit, Agent).</scope>
+> Standardizes agent behavior, personas, and permission levels across the different IDE modes (Ask, Plan, Edit, Agent).
 
 #### 1. MODE PERMISSION MATRIX
 
@@ -63,12 +53,9 @@ MANAGER (Direct Answer) ← VIOLATION
 
 This pattern is FORBIDDEN in ALL modes.
 
-</axiom_core>
-<authority_matrix>
-
 ### MODE-SPECIFIC CONSTRAINTS
 
-<scope>Defines the specific tool access and behavioral constraints of each mode.</scope>
+> Defines the specific tool access and behavioral constraints of each mode.
 
 #### 4. ASK MODE
 
@@ -104,12 +91,9 @@ This pattern is FORBIDDEN in ALL modes.
 **Prohibited:** None (with user confirmation for destructive ops)
 **Allowed:** All tools with appropriate permissions
 
-</authority_matrix>
-<compliance_testing>
-
 ### ROUTING VALIDATION
 
-<scope>Checklist and error definitions for enforcing mode integrity.</scope>
+> Checklist and error definitions for enforcing mode integrity.
 
 #### 8. ROUTING VALIDATION CHECKLIST
 
@@ -130,9 +114,3 @@ Before responding, MANAGER must verify:
 | `MODE_VIOLATION_ERROR`      | Agent exceeded mode permissions  | Write in Ask mode              |
 | `THINKING_OMISSION_ERROR`   | Supervisor missing thinking field | No `thinking_level` in Tier 1 JSON |
 | `LANGUAGE_ERROR`            | Output language mismatch         | Italian input, English output  |
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>
