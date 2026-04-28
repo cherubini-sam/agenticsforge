@@ -74,6 +74,7 @@ Governance lives in the repo. Shared with the team via git.
 git clone https://github.com/cherubini-sam/agenticsforge.git /tmp/agenticsforge
 
 cp -r /tmp/agenticsforge/.claude   /path/to/your-project/
+cp -r /tmp/agenticsforge/.githooks /path/to/your-project/
 cp    /tmp/agenticsforge/CLAUDE.md /path/to/your-project/CLAUDE.md
 ```
 
@@ -129,6 +130,9 @@ cp    /tmp/agenticsforge/CLAUDE.md         ~/.claude/CLAUDE.md
 
 # Step 2 — Per-project extensions
 mkdir -p your-project/.claude/{skills,rules,artifacts}
+cp -r /tmp/agenticsforge/.githooks your-project/
+git -C your-project config core.hooksPath .githooks
+
 # Add project-specific .claude/rules/stack.md, skills/, etc.
 ```
 

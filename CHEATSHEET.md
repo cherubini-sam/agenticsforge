@@ -39,6 +39,7 @@ Governance layer lives in the repo. Committed to git and shared with the team.
 git clone https://github.com/cherubini-sam/agenticsforge.git /tmp/agenticsforge
 
 cp -r /tmp/agenticsforge/.claude   /path/to/your-project/
+cp -r /tmp/agenticsforge/.githooks /path/to/your-project/
 cp    /tmp/agenticsforge/CLAUDE.md /path/to/your-project/CLAUDE.md
 ```
 
@@ -92,8 +93,10 @@ cp -r /tmp/agenticsforge/.claude/rules     ~/.claude/rules
 cp -r /tmp/agenticsforge/.claude/hooks     ~/.claude/hooks
 cp    /tmp/agenticsforge/CLAUDE.md         ~/.claude/CLAUDE.md
 
-# Step 2 — Per-project extensions (skills, project-specific rules)
+# Step 2 — Per-project extensions (skills, project-specific rules, hooks)
 mkdir -p .claude/{skills,rules,artifacts}
+cp -r /tmp/agenticsforge/.githooks ./
+git config core.hooksPath .githooks
 
 # Add project-specific rules
 cp /tmp/agenticsforge/.claude/rules/stack.md .claude/rules/stack.md
