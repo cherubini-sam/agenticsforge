@@ -110,7 +110,7 @@ Tier 2 defaults:
   persona:           <inherit-Tier-1> (omit — inherit from Tier 1)
 ```
 
-## SKILL AUTO-LOAD (Law 41)
+## SKILL AUTO-LOAD (Law 37)
 
 Every turn, MANAGER resolves relevant skills from `.claude/skills/triggers.json` during Phase 0(b) Prompt Intake and records them in Tier 1 JSON `loaded_skills`.
 
@@ -122,11 +122,11 @@ Every turn, MANAGER resolves relevant skills from `.claude/skills/triggers.json`
 4. Apply priority tie-break; cap at 10 (soft cap 15 with user override)
 5. Apply `task.md §Skill Overrides` (force_load / force_skip)
 6. Emit `loaded_skills` field on Tier 1 JSON
-7. Downstream agents read each resolved skill before acting (lazy load per Law 41.6)
+7. Downstream agents read each resolved skill before acting (lazy load per Law 37.6)
 
 **Forbidden:** semantic/LLM-based matching. Resolution MUST be deterministic (keyword/regex/glob/intent) for hook-enforceability.
 
-**Violation:** missing `loaded_skills` field or unresolved skill referenced in Tier 2 → Law 1 + Law 41 → SESSION TERMINATION.
+**Violation:** missing `loaded_skills` field or unresolved skill referenced in Tier 2 → Law 1 + Law 37 → SESSION TERMINATION.
 
 ## PHASE GATE CHAIN
 

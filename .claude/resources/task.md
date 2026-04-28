@@ -79,7 +79,7 @@ Cycle close is NOT an interactive halt — it is a natural terminus. The next us
   - [ ] [MANAGER] Initialize Task Manifest (instantiate template from `.claude/resources/task.md`).
   - [ ] [MANAGER] Verify and confirm Phase 0 gate passed.
   - [ ] [MANAGER] `touch .claude/artifacts/.session-lock` — mark cycle in-progress so SessionStart purge is skipped during this P1→P6 run.
-  - [ ] [ARCHITECT] Define scope and confirm loaded skills from `prompt_intake.md §Loaded Skills` (Law 41).
+  - [ ] [ARCHITECT] Define scope and confirm loaded skills from `prompt_intake.md §Loaded Skills` (Law 37).
   - **DoD**: Task manifest is initialized, granular, and scope is locked.
 
 - [ ] Phase 2: Context Retrieval (Research)
@@ -118,7 +118,7 @@ Cycle close is NOT an interactive halt — it is a natural terminus. The next us
 
 ## SKILL OVERRIDES
 
-> Skills are auto-loaded by MANAGER every turn from `.claude/skills/triggers.json` per Law 41.
+> Skills are auto-loaded by MANAGER every turn from `.claude/skills/triggers.json` per Law 37.
 > Use this block ONLY to override automatic resolution.
 
 ```yaml

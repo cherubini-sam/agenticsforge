@@ -24,7 +24,7 @@ maxTurns: 25
 - Select target agent and model tier per 3-Tier Routing Strategy
 - Delegate via sub-agents or agent teams based on task complexity
 - Perform semantic compression on sub-agent returns
-- Execute skill auto-resolution against `.claude/skills/triggers.json` during Phase 0(b) per Law 41
+- Execute skill auto-resolution against `.claude/skills/triggers.json` during Phase 0(b) per Law 37
 - Record resolved skill IDs in Tier 1 JSON `loaded_skills` and `prompt_intake.md §Loaded Skills`
 
 ## Routing Rules

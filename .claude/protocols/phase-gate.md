@@ -67,7 +67,7 @@ Session Start Sequence (HARD BLOCK):
 ├───────────────────────────────────────────────────────────────┤
 │ 7. PHASE 0 (b): reformulate prompt → write prompt_intake.md   │
 │    - Read user prompt; classify intent, language, mode       │
-│    - Skill Resolution (Law 41): triggers.json + auto_load    │
+│    - Skill Resolution (Law 37): triggers.json + auto_load    │
 │    - Fill ## Language, ## Original, ## Reformulated,         │
 │      ## Token Delta, ## Fidelity Score, ## Decision,         │
 │      ## Loaded Skills                                        │
