@@ -1,6 +1,8 @@
 ---
 name: multi-agent
 description: "Framework-agnostic mapping of the 7-role governance architecture to any multi-agent system. Use when building, deploying, or reasoning about orchestrator/worker agent topologies that implement MANAGER/ARCHITECT/ENGINEER/VALIDATOR/LIBRARIAN/REFLECTOR/PROTOCOL roles."
+when_to_use: "When building or deploying orchestrator/worker agent systems, designing role-to-phase mappings, implementing the Tier 1/2 JSON contract, or reasoning about sub-agent spawn patterns and model delegation."
+allowed-tools: [Agent]
 ---
 
 # Multi-Agent — Framework-Agnostic Role Mapping

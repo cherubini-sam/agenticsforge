@@ -1,6 +1,8 @@
 ---
 name: debugging
 description: "Systematic debugging workflow: stack trace analysis, hypothesis-driven root cause investigation, bisection, and minimal-repro authoring. Use when diagnosing bugs, tracing failures, or analyzing exceptions."
+when_to_use: "When diagnosing a specific bug from a stack trace, running git bisect to find a regression commit, reproducing a failure in isolation, or authoring a minimal repro for an intermittent failure."
+allowed-tools: [Bash, Read, Grep]
 ---
 
 # Debugging
