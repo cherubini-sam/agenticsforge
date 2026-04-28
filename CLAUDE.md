@@ -51,62 +51,7 @@ Every turn emits Tier 1 then Tier 2 JSON as the absolute first output. Detail: `
 4. **Phase 1 through Phase 4 (Segment A continues):** MANAGER creates `task.md`, ARCHITECT gathers context and drafts implementation_plan.md, REFLECTOR audits until confidence 1.00, MANAGER emits the authorization request. Turn HALTS here — sole interactive halt.
 5. **Phase 5 through Phase 6 (Segment B):** After user `yes`, operation-branch creation + ENGINEER execution + VALIDATOR verification + walkthrough append + ephemeral deletion — all in one continuous turn-segment. Cycle close is a non-interactive turn boundary (Law 33).
 
-### Tier 1 — MANAGER Routing JSON
-
-```json
-{
-  "routing_agent": "MANAGER",
-  "target_agent": "[ARCHITECT|ENGINEER|VALIDATOR|LIBRARIAN|REFLECTOR|PROTOCOL]",
-  "intent": "[classification]",
-  "confidence": 0.0,
-  "reasoning": "[why]",
-  "model_shard": "[detected_shard_name]",
-  "thinking_level": "[low|medium|high|max]",
-  "language_check": "[EN|IT]",
-  "persona": "SeniorPeer",
-  "mode": "[Ask|Edit|Agent|Plan]",
-  "loaded_skills": ["[resolved_skill_ids]"]
-}
-```
-
-### Tier 2 — Agent Execution JSON
-
-```json
-{
-  "active_agent": "[agent_name]",
-  "routed_by": "MANAGER",
-  "task_type": "[classification]",
-  "execution_mode": "[readonly|write|full]",
-  "context_scope": "[narrow|medium|broad]",
-  "persona": "SeniorPeer"
-}
-```
-
-**Tier 2 rotation contract:** `active_agent` rotates per turn to match the agent actually executing. MANAGER → ARCHITECT → REFLECTOR → ENGINEER → VALIDATOR across phase boundaries, one agent per turn (Law 33).
-
-**`persona` field:** canonical English enum, sourced from `prompt_intake.md` `## Language`, immutable within a P1→P6 cycle. Mismatch = Law 1 violation → SESSION TERMINATION.
-
-**Tier 2 self-route elision (Law 1.3):** when `target_agent == "MANAGER"` (MANAGER executing its own routing turn, e.g. Phase 1 task creation), Tier 2 JSON MAY be omitted entirely — it would be a self-referential duplicate of Tier 1.
-
-### Tier 1/2 Defaults (Law 1.2 — Default Elision)
-
-Fields whose runtime value equals the documented default MAY be omitted. Missing fields without a documented default remain a Law 1 violation → TERMINATE.
-
-```
-Tier 1 defaults:
-  routing_agent:     "MANAGER"        (always omit-able — constant)
-  confidence:        1.0              (omit when fully confident)
-  thinking_level:    "medium"         (omit default)
-  mode:              "Edit"           (omit default)
-  language_check:    <session-sticky> (omit if unchanged from previous turn)
-  persona:           <session-sticky> (omit if unchanged from previous turn)
-  loaded_skills:     []               (omit when empty)
-
-Tier 2 defaults:
-  routed_by:         "MANAGER"        (always omit-able)
-  context_scope:     "narrow"         (omit default)
-  persona:           <inherit-Tier-1> (omit — inherit from Tier 1)
-```
+> Full schema, field constraints, elision defaults, and rotation contract: `.claude/protocols/core-laws.md` §8.
 
 ## SKILL AUTO-LOAD (Law 37)
 
@@ -212,39 +157,7 @@ If you notice yourself considering any task-type carve-out, that is a signal to 
 - Batch independent operations in parallel.
 - No polling or sleeping while waiting on background work.
 
-## GLOBAL INSTALLATION
-
-This protocol system supports two installation modes:
-
-### Resolution Order
-
-When reading `.claude/` paths (protocols, resources, skills, agents, rules), resolve in this order:
-
-1. **Project-local**: `${CLAUDE_PROJECT_DIR}/.claude/` — if the project has its own `.claude/protocols/` directory, use project-local files. This allows per-project overrides.
-2. **Global fallback**: `${HOME}/.claude/` — if no project-local `.claude/protocols/` exists, use the global installation.
-
-This resolution applies to ALL `.claude/` subdirectories: `protocols/`, `resources/`, `skills/`, `agents/`, `rules/`, `hooks/`.
-
-### Artifact Sandbox
-
-`.claude/artifacts/` is ALWAYS project-local (`${CLAUDE_PROJECT_DIR}/.claude/artifacts/`), even when the rest of `.claude/` is global. Each project gets its own scratch space. The `session-bootstrap.sh` hook creates it automatically.
-
-### settings.json Dual-Mode
-
-- `~/.claude/settings.json` — global config. Hook paths use `${HOME}/.claude/hooks/`.
-- `<project>/.claude/settings.json` — project override. Hook paths use `${CLAUDE_PROJECT_DIR}/.claude/hooks/`. Claude Code merges natively; project settings win on conflict.
-
-### What Claude Code Loads Natively
-
-| Location                   | Loaded by Claude Code          | Notes                             |
-| :------------------------- | :----------------------------- | :-------------------------------- |
-| `~/.claude/CLAUDE.md`      | Yes — global instructions      | Always loaded                     |
-| `~/.claude/rules/*.md`     | Yes — global rules             | Always loaded                     |
-| `~/.claude/agents/*.md`    | Yes — global agent definitions | Always loaded                     |
-| `~/.claude/settings.json`  | Yes — global settings + hooks  | Always loaded                     |
-| `~/.claude/protocols/*.md` | No — read on-demand by agent   | Agent uses resolution order above |
-| `~/.claude/resources/*.md` | No — read on-demand by agent   | Agent uses resolution order above |
-| `~/.claude/skills/`        | No — read on-demand by agent   | Agent uses resolution order above |
+@.claude/protocols/installation.md
 
 ## KERNEL PRIORITY
 
