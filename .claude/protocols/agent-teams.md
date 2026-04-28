@@ -33,9 +33,8 @@
 #### 1. Agent Team Architecture
 
 Agent Teams are collaborative mesh networks of independent Claude Code instances. Unlike sub-agents (hierarchical, report to orchestrator), team members:
-- Communicate directly with one another.
-- Share a centralized task list (stored in `~/.claude/tasks/`).
-- Self-coordinate objectives without continuous orchestrator intervention.
+- Communicate via the orchestrator — sub-agents spawned via the `Agent` tool have isolated context windows and return only to their caller; they cannot message each other directly.
+- Self-coordinate objectives through orchestrator-mediated task assignment.
 - Each maintain independent context windows (anti-anchoring by design).
 
 **Trigger:** Complex interdependent tasks requiring continuous synchronization across **≥3 independent domains** AND satisfying §0 hard gate. Below 3 domains, use sub-agents.
@@ -60,7 +59,7 @@ Agent Teams are collaborative mesh networks of independent Claude Code instances
 
 | Mechanism | Description |
 | :--- | :--- |
-| Dynamic file locking | When a teammate claims a task, lock files in scope via `~/.claude/tasks/` |
+| Dynamic file locking | When a teammate claims a task, lock files in scope via orchestrator-tracked task state in `task.md` |
 | Dependency blocking | Tasks with prerequisites are blocked until prerequisite tasks complete |
 | Automatic unblocking | When a prerequisite task completes, dependent tasks unblock automatically |
 

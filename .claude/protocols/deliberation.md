@@ -144,7 +144,7 @@ Keep response under 500 tokens. Be adversarial — find what others overlook.
 
 - **MANAGER** is the ONLY agent authorized to invoke the Tripartite Council.
 - **Council members** are ephemeral sub-agents — they terminate after returning their opinion.
-- **Model tier:** Council members use Tier 3 (Sonnet) by default. MANAGER may escalate to Tier 1 (Opus) for critical security decisions.
+- **Model tier:** Council members use Tier 2 (Sonnet) by default. MANAGER may escalate to Tier 1 (Opus) for critical security decisions.
 - **Synthesis** is performed by MANAGER or ARCHITECT, never by a council member.
 
 </authority_matrix>

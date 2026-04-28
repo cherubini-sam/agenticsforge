@@ -47,7 +47,7 @@ A self-contained governance layer that enforces a 7-agent, 6-phase engineering p
 
 **Agentics Forge** is a governance layer, not a library. It is a `.claude/` directory and `CLAUDE.md` file that you copy into any project — or globally into `~/.claude/` — and Claude Code automatically loads it on every session.
 
-> **Claude Code only.** This system runs exclusively inside Claude Code (CLI, VS Code extension, or desktop app). It does not work properly with the raw Anthropic API or any other AI tool.
+> **Claude Code only.** This system runs exclusively inside Claude Code (CLI, VS Code extension, or JetBrains plugin). It does not work properly with the raw Anthropic API or any other AI tool.
 
 Once installed, every Claude Code session is governed by a strict 7-agent, 6-phase pipeline: PROTOCOL validates the boot before any work begins; ARCHITECT drafts a plan; REFLECTOR audits it to confidence 1.00; you authorize it; ENGINEER executes on a dedicated branch; VALIDATOR verifies. The entire behavioral contract lives in version-controlled `.claude/` files — inspectable, diff-able, and overridable like any other code.
 
@@ -59,6 +59,7 @@ Once installed, every Claude Code session is governed by a strict 7-agent, 6-pha
 - **Single-Halt Atomicity:** Exactly one interactive halt per cycle — the Phase 4 authorization request. Everything before it runs in one continuous turn; everything after runs in one continuous turn.
 - **Branch Isolation:** ENGINEER executes exclusively on `{op}/{slug}` branches. Direct writes to `main`/`master` are hard-blocked by `block-destructive.sh` at every tool call.
 - **Skill Auto-Load:** MANAGER resolves relevant skills deterministically against `triggers.json` on every turn. Matched skills are recorded in Tier 1 JSON and loaded lazily before any agent acts.
+- **3-Tier Model Routing:** MANAGER orchestrates on the parent session shard (immutable at launch). Sub-agents spawned via the `Agent` tool each carry an explicit `model` parameter, routing Tier 1 tasks to Opus, Tier 2 to Sonnet, and Tier 3 to Haiku. Every spawn emits a mandatory spawn-transparency JSON block — sub-agent model delegation is as visible as any other agent turn.
 - **Drop-In Deploy:** No build step, no package install, no runtime dependency. Three copy-paste commands and Claude Code picks it up automatically.
 
 ---
@@ -103,6 +104,14 @@ cp -r /tmp/agenticsforge/.claude/. ~/.claude/
 cp    /tmp/agenticsforge/CLAUDE.md ~/.claude/CLAUDE.md
 ```
 
+> **Important — rewrite `${CLAUDE_PROJECT_DIR}` to `${HOME}` in `~/.claude/settings.json`.** The bundled `settings.json` resolves every hook path against `${CLAUDE_PROJECT_DIR}`, which is correct for project-local installs but does not exist in a global context. After copying, swap the variable:
+>
+> ```bash
+> sed -i.bak 's|${CLAUDE_PROJECT_DIR}|${HOME}|g' ~/.claude/settings.json
+> ```
+>
+> Hook commands then resolve to `${HOME}/.claude/hooks/...`, which is correct for global mode.
+
 **Resolution order**: Managed policy → `~/.claude/CLAUDE.md` → `./CLAUDE.md` → `./CLAUDE.local.md`. All matching files are concatenated — project rules extend global rules, they do not replace them.
 
 ---
@@ -138,7 +147,7 @@ On Turn 0 you should see Tier 1 + Tier 2 JSON as the **first output** — that c
 {
   "target_agent": "PROTOCOL",
   "intent": "boot_validation",
-  "model_shard": "claude-sonnet-4",
+  "model_shard": "claude-sonnet-4-6",
   ...
 }
 ```
@@ -246,6 +255,7 @@ sequenceDiagram
 | :------------------------------- | :--------------------------------------------------------------------------------------------- |
 | Protocol boot enforcement        | `enforce-boot-gate.sh` — PreToolUse hook blocks all tool calls until `prompt_intake.md` exists |
 | Phase gate enforcement           | `enforce-phase-gate.sh` — PreToolUse hook gates each phase on required artifact presence       |
+| Sub-agent spawn transparency     | `enforce-spawn-transparency.sh` — PreToolUse hook blocks `Agent`/`Task` calls missing the `sub_agent_spawn` JSON block |
 | `main`/`master` write protection | `block-destructive.sh` — hard-blocks direct writes, force-push, `--no-verify`, `DROP TABLE`    |
 | Tier 1/2 JSON transparency       | CLAUDE.md Law 1 + agent behavioral contracts in `.claude/agents/`                              |
 | Confidence-gated planning        | REFLECTOR agent — confidence 1.00 required before ENGINEER is authorized                       |
@@ -253,6 +263,7 @@ sequenceDiagram
 | Skill auto-load per turn         | `.claude/skills/triggers.json` — deterministic keyword/regex/glob matching                     |
 | Cross-cycle audit trail          | `.claude/artifacts/walkthrough.md` — permanent, append-only                                    |
 | Multilingual session support     | `.claude/protocols/communication.md` — persona matrix                                          |
+| 3-tier sub-agent model routing   | `.claude/rules/stack.md` — Opus/Sonnet/Haiku delegation via `Agent` tool `model` param        |
 
 ---
 
@@ -296,9 +307,16 @@ sequenceDiagram
 │   └── implementation-plan.md
 │
 ├── hooks/                        # Shell scripts referenced in settings.json
+│   ├── _resolve-config-dir.sh    # Internal helper sourced by other hooks
+│   ├── session-bootstrap.sh
+│   ├── validate-skills.sh
 │   ├── enforce-boot-gate.sh
 │   ├── enforce-phase-gate.sh
-│   └── block-destructive.sh
+│   ├── block-destructive.sh
+│   ├── enforce-spawn-transparency.sh
+│   ├── format-code.sh
+│   ├── verify-tests.sh
+│   └── notify-completion.sh      # Optional Stop hook (not wired by default)
 │
 └── artifacts/                    # Ephemeral sandbox — gitignored, never committed
     ├── prompt_intake.md          # Phase 0(b) — deleted at Phase 6

@@ -28,7 +28,7 @@ maxTurns: 50
 
 ## Constraints
 
-- Acts only on plans approved by REFLECTOR (confidence >= 0.85)
+- Acts only on plans approved by REFLECTOR (confidence >= 1.00)
 - Cannot spawn sub-agents
 - Cannot access web search
 
@@ -44,7 +44,7 @@ maxTurns: 50
 
 **Role:** Implementation Engine & Ops
 **Mission:** Translate approved plans into production-ready code and operational artifacts.
-**STRICT DELEGATION:** ENGINEER acts only on plans approved by REFLECTOR (confidence >= 0.85, severity != CRITICAL).
+**STRICT DELEGATION:** ENGINEER acts only on plans approved by REFLECTOR (confidence >= 1.00, severity != CRITICAL).
 
 ##### 1.1 Execution Mode
 
@@ -79,7 +79,7 @@ Then HALT. No further output. No recovery. No re-initialization.
 
 - `debugging` - Systematic debugging and root cause analysis.
 - `refactoring` - Coverage-first safe refactoring patterns.
-- `test-generation` - pytest test generation and coverage expansion.
+- `test-generation` - test generation and coverage expansion.
 
 #### 5. CONTEXT & MEMORY MANAGEMENT
 

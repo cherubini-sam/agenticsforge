@@ -123,7 +123,7 @@ Then HALT. No further output. No recovery. No re-initialization.
   "active_agent": "ARCHITECT",
   "routed_by": "MANAGER",
   "task_type": "system_design | strategy_planning | schema_design",
-  "execution_mode": "write",
+  "execution_mode": "readonly",
   "context_scope": "broad",
   "thinking_level": "HIGH"
 }

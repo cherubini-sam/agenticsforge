@@ -1,6 +1,6 @@
 # CLAUDECODE PROTOCOL [SSOT]
 
-> **Status:** ACTIVE | **Runtime:** Claude Code (CLI, VS Code, macOS App) | **Version:** 2.0.0
+> **Status:** ACTIVE | **Runtime:** Claude Code (CLI, VS Code, JetBrains) | **Version:** 2.0.0
 
 <important if="writing_artifacts">
 **Artifact Containment (Law 5).** All mandatory workflow artifacts (`task.md`, `implementation_plan.md`, `prompt_intake.md`, `walkthrough.md`, reports, critique outputs) live EXCLUSIVELY in `.claude/artifacts/`. The directory is LOCAL-ONLY — never `git add`, never commit, never narrow the `.gitignore`. Writes on `master`/`main` are restricted to the artifact sandbox by `block-destructive.sh`.
@@ -12,11 +12,23 @@
 
 ## MODEL DETECTION
 
-- `claude-opus-4-6` → adaptive reasoning, Tier 1 orchestration
-- `claude-sonnet-4-6` → adaptive reasoning, Tier 3 implementation
-- `claude-haiku-4-5` → budget-controlled, Tier 4 exploration
+**Current (recommended) shards:**
+
+- `claude-opus-4-7` → adaptive reasoning only (no extended thinking), 1M context, Tier 1 orchestration
+- `claude-sonnet-4-6` → adaptive reasoning, 1M context, Tier 2 implementation
+- `claude-haiku-4-5` → extended thinking budget-controlled, 200K context, Tier 3 exploration
+
+**Legacy shards (available, not deprecated):**
+
+- `claude-opus-4-6` → adaptive reasoning (extended thinking deprecated), 1M context, Tier 1
+- `claude-opus-4-5` → extended thinking budget-controlled, 200K context, Tier 1
+- `claude-sonnet-4-5` → extended thinking budget-controlled, 200K context, Tier 2
+
+**Unknown shard fallback (deterministic):** match by family → use highest current shard for that family → default `claude-sonnet-4-6`. Emit LOG WARNING on fallback trigger. Full spec: `.claude/rules/stack.md`.
 
 Detected model shard is IMMUTABLE for the session once loaded.
+
+**Sub-agent model delegation:** The session shard cannot change mid-conversation. The `Agent` tool's `model` parameter (`"haiku"` | `"sonnet"` | `"opus"`) is the ONLY mechanism to use a different model within a session. MANAGER stays on the parent shard and delegates sub-tasks to cheaper or more capable models per the 3-Tier routing decision. Every `Agent` call MUST be preceded by a spawn-transparency JSON block in conversation output (Law 1 extension). Full delegation syntax, tier table, and required JSON format: `.claude/rules/stack.md` §3-Tier Model Routing Strategy.
 
 ## CORE LAWS (SSOT: `.claude/protocols/core-laws.md`)
 
@@ -53,7 +65,7 @@ Every turn emits Tier 1 then Tier 2 JSON as the absolute first output. Detail: `
   "model_shard": "[detected_shard_name]",
   "thinking_level": "[low|medium|high|max]",
   "language_check": "[EN|IT]",
-  "persona": "EN-SeniorPeer",
+  "persona": "SeniorPeer",
   "mode": "[Ask|Edit|Agent|Plan]",
   "loaded_skills": ["[resolved_skill_ids]"]
 }
@@ -68,7 +80,7 @@ Every turn emits Tier 1 then Tier 2 JSON as the absolute first output. Detail: `
   "task_type": "[classification]",
   "execution_mode": "[readonly|write|full]",
   "context_scope": "[narrow|medium|broad]",
-  "persona": "EN-SeniorPeer"
+  "persona": "SeniorPeer"
 }
 ```
 
@@ -103,6 +115,7 @@ Tier 2 defaults:
 Every turn, MANAGER resolves relevant skills from `.claude/skills/triggers.json` during Phase 0(b) Prompt Intake and records them in Tier 1 JSON `loaded_skills`.
 
 **Resolution order:**
+
 1. Parse user prompt + classified intent
 2. Match against every skill's `triggers` block (keywords / regex / intents / file_globs)
 3. Union with all `auto_load: true` skills that hit at least one trigger
@@ -117,14 +130,14 @@ Every turn, MANAGER resolves relevant skills from `.claude/skills/triggers.json`
 
 ## PHASE GATE CHAIN
 
-| Phase | Artifact | Owner | Gate |
-|:---|:---|:---|:---|
-| Phase 0 (a) | — | PROTOCOL | Deterministic boot checks |
-| Phase 0 (b) | `.claude/artifacts/prompt_intake.md` | PROTOCOL | Language lock + reformulation |
-| Phase 1 | `.claude/artifacts/task.md` | MANAGER | Task manifest instantiated from `task.md` |
-| Phase 3 | `.claude/artifacts/implementation_plan.md` | ARCHITECT | REFLECTOR approval (Confidence 1.00) |
-| Phase 5 | Source code edits on operation branch | ENGINEER | Branch isolation guard |
-| Phase 6 | `.claude/artifacts/walkthrough.md` (append-only) | MANAGER | Idempotent `git push -u origin {op}/{slug}` (branch published to origin), emit HUMAN-ONLY merge+cleanup command block in chat (Law 40 — informational, agent never executes), then hard-delete `task.md`, `implementation_plan.md`, `prompt_intake.md` |
+| Phase       | Artifact                                         | Owner     | Gate                                                                                                                                                                                                                                                   |
+| :---------- | :----------------------------------------------- | :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Phase 0 (a) | —                                                | PROTOCOL  | Deterministic boot checks                                                                                                                                                                                                                              |
+| Phase 0 (b) | `.claude/artifacts/prompt_intake.md`             | PROTOCOL  | Language lock + reformulation                                                                                                                                                                                                                          |
+| Phase 1     | `.claude/artifacts/task.md`                      | MANAGER   | Task manifest instantiated from `task.md`                                                                                                                                                                                                              |
+| Phase 3     | `.claude/artifacts/implementation_plan.md`       | ARCHITECT | REFLECTOR approval (Confidence 1.00)                                                                                                                                                                                                                   |
+| Phase 5     | Source code edits on operation branch            | ENGINEER  | Branch isolation guard                                                                                                                                                                                                                                 |
+| Phase 6     | `.claude/artifacts/walkthrough.md` (append-only) | MANAGER   | Idempotent `git push -u origin {op}/{slug}` (branch published to origin), emit HUMAN-ONLY merge+cleanup command block in chat (Law 40 — informational, agent never executes), then hard-delete `task.md`, `implementation_plan.md`, `prompt_intake.md` |
 
 ## WORKFLOW RE-ENTRY
 
@@ -132,16 +145,16 @@ Any post-P6 user input restarts the full P1 → P6 cycle. Phase 0 (b) re-detects
 
 ## TOOL MAPPING (Claude Code Native)
 
-| Tool | Purpose | Phase 1 Gate |
-|:---|:---|:---|
-| `Read` | Read file contents | ALLOWED |
-| `Glob` | File pattern matching | ALLOWED |
-| `Write` | Create/overwrite files | ALLOWED |
-| `Edit` | String replacement | BLOCKED |
-| `Grep` | Content search | BLOCKED |
-| `Bash` | Shell execution | BLOCKED |
-| `Agent` | Sub-agent delegation | BLOCKED |
-| `WebSearch` / `WebFetch` | External fetch | BLOCKED |
+| Tool                     | Purpose                | Phase 1 Gate |
+| :----------------------- | :--------------------- | :----------- |
+| `Read`                   | Read file contents     | ALLOWED      |
+| `Glob`                   | File pattern matching  | ALLOWED      |
+| `Write`                  | Create/overwrite files | ALLOWED      |
+| `Edit`                   | String replacement     | BLOCKED      |
+| `Grep`                   | Content search         | BLOCKED      |
+| `Bash`                   | Shell execution        | BLOCKED      |
+| `Agent`                  | Sub-agent delegation   | BLOCKED      |
+| `WebSearch` / `WebFetch` | External fetch         | BLOCKED      |
 
 Phase 1 Gate tools are the ONLY tools permitted when `task.md` is missing.
 
@@ -225,15 +238,15 @@ This resolution applies to ALL `.claude/` subdirectories: `protocols/`, `resourc
 
 ### What Claude Code Loads Natively
 
-| Location | Loaded by Claude Code | Notes |
-|:---|:---|:---|
-| `~/.claude/CLAUDE.md` | Yes — global instructions | Always loaded |
-| `~/.claude/rules/*.md` | Yes — global rules | Always loaded |
-| `~/.claude/agents/*.md` | Yes — global agent definitions | Always loaded |
-| `~/.claude/settings.json` | Yes — global settings + hooks | Always loaded |
-| `~/.claude/protocols/*.md` | No — read on-demand by agent | Agent uses resolution order above |
-| `~/.claude/resources/*.md` | No — read on-demand by agent | Agent uses resolution order above |
-| `~/.claude/skills/` | No — read on-demand by agent | Agent uses resolution order above |
+| Location                   | Loaded by Claude Code          | Notes                             |
+| :------------------------- | :----------------------------- | :-------------------------------- |
+| `~/.claude/CLAUDE.md`      | Yes — global instructions      | Always loaded                     |
+| `~/.claude/rules/*.md`     | Yes — global rules             | Always loaded                     |
+| `~/.claude/agents/*.md`    | Yes — global agent definitions | Always loaded                     |
+| `~/.claude/settings.json`  | Yes — global settings + hooks  | Always loaded                     |
+| `~/.claude/protocols/*.md` | No — read on-demand by agent   | Agent uses resolution order above |
+| `~/.claude/resources/*.md` | No — read on-demand by agent   | Agent uses resolution order above |
+| `~/.claude/skills/`        | No — read on-demand by agent   | Agent uses resolution order above |
 
 ## KERNEL PRIORITY
 

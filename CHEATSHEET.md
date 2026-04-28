@@ -13,7 +13,7 @@ A quick-reference guide for installing, configuring, and working with the Agenti
     - [Verify the Install](#verify-the-install)
   - [CLAUDE.md Resolution Order](#claudemd-resolution-order)
   - [Settings Scopes](#settings-scopes)
-    - [Minimal `.claude/settings.json`](#minimal-claudesettingsjson)
+    - [Canonical `.claude/settings.json`](#canonical-claudesettingsjson)
   - [Hooks Configuration](#hooks-configuration)
   - [Pre-commit Hooks](#pre-commit-hooks)
   - [Conventional Commits Protocol](#conventional-commits-protocol)
@@ -71,7 +71,12 @@ cp -r ~/.claude ~/.claude.bak        # backup existing config first
 
 cp -r /tmp/agenticsforge/.claude/. ~/.claude/
 cp    /tmp/agenticsforge/CLAUDE.md   ~/.claude/CLAUDE.md
+
+# Rewrite hook paths from project-scope to global-scope
+sed -i.bak 's|${CLAUDE_PROJECT_DIR}|${HOME}|g' ~/.claude/settings.json
 ```
+
+> **Why the `sed`?** The bundled `.claude/settings.json` references hooks via `${CLAUDE_PROJECT_DIR}/.claude/hooks/...` — correct when installed inside a project, but `${CLAUDE_PROJECT_DIR}` is undefined for a global install. Replacing it with `${HOME}` makes every hook resolve to `~/.claude/hooks/...`, which is the canonical global location. Skip this step and the hooks will silently no-op.
 
 ---
 
@@ -129,33 +134,62 @@ Claude Code merges settings from four scopes. Later scopes override earlier ones
 | Project | `.claude/settings.json`       | Yes — team shared | Hooks, permissions, shared config     |
 | Local   | `.claude/settings.local.json` | No — gitignored   | Personal project-level overrides      |
 
-### Minimal `.claude/settings.json`
+### Canonical `.claude/settings.json`
+
+This is the deliverable form bundled with Agentics Forge. For a global install, rewrite `${CLAUDE_PROJECT_DIR}` → `${HOME}` (see [Install — Global](#install--global)).
 
 ```json
 {
+  "env": {
+    "CLAUDE_CODE_THINKING_ENABLED": "true",
+    "CLAUDE_CODE_THINKING_LEVEL": "medium",
+    "ANTHROPIC_REASONING_EFFORT": "medium"
+  },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/session-bootstrap.sh", "timeout": 15000 },
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/validate-skills.sh", "timeout": 15000 }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": ".*",
         "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-boot-gate.sh"
-          },
-          {
-            "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-phase-gate.sh"
-          },
-          {
-            "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/block-destructive.sh"
-          }
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-boot-gate.sh", "timeout": 10000 }
+        ]
+      },
+      {
+        "matcher": "Bash|Write|Edit|MultiEdit|Agent|Task",
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/block-destructive.sh", "timeout": 10000 }
+        ]
+      },
+      {
+        "matcher": "Read|Glob|Grep|Bash|Write|Edit|MultiEdit|Agent|Task|WebSearch|WebFetch",
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-phase-gate.sh", "timeout": 10000 }
+        ]
+      },
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-spawn-transparency.sh", "timeout": 10000 }
         ]
       }
-    ]
-  },
-  "permissions": {
-    "additionalDirectories": ["${HOME}/.claude"]
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/format-code.sh", "timeout": 30000 },
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/verify-tests.sh", "timeout": 60000 }
+        ]
+      }
+    ],
+    "Stop": []
   }
 }
 ```
@@ -164,13 +198,18 @@ Claude Code merges settings from four scopes. Later scopes override earlier ones
 
 ## Hooks Configuration
 
-| Hook                    | Trigger                | What It Blocks                                                                                 |
-| :---------------------- | :--------------------- | :--------------------------------------------------------------------------------------------- |
-| `enforce-boot-gate.sh`  | PreToolUse — all tools | Every tool call until `.claude/artifacts/prompt_intake.md` exists                              |
-| `enforce-phase-gate.sh` | PreToolUse — all tools | Tool calls until `task.md` (Phase 1) and `implementation_plan.md` (Phase 3) exist              |
-| `block-destructive.sh`  | PreToolUse — all tools | `rm -rf /`, `git push --force` on protected branches, writes to `main`/`master`, `--no-verify` |
+| Hook                            | Trigger                              | Effect                                                                                          |
+| :------------------------------ | :----------------------------------- | :---------------------------------------------------------------------------------------------- |
+| `session-bootstrap.sh`          | SessionStart                         | Creates `.claude/artifacts/` sandbox; initialises session state                                 |
+| `validate-skills.sh`            | SessionStart                         | Validates `triggers.json` schema; warns on malformed skill entries                              |
+| `enforce-boot-gate.sh`          | PreToolUse — all tools               | Blocks every tool call until `.claude/artifacts/prompt_intake.md` exists                        |
+| `enforce-phase-gate.sh`         | PreToolUse — read/write/exec tools   | Blocks tool calls until `task.md` (Phase 1) and `implementation_plan.md` (Phase 3) exist        |
+| `block-destructive.sh`          | PreToolUse — Bash/Write/Edit/Agent   | Blocks `rm -rf /`, `git push --force`, writes to `main`/`master`, `--no-verify`                 |
+| `enforce-spawn-transparency.sh` | PreToolUse — `Agent` / `Task`        | Blocks sub-agent spawns missing the `sub_agent_spawn` JSON block (Law 1 extension)              |
+| `format-code.sh`                | PostToolUse — Write/Edit/MultiEdit   | Auto-formats changed files via the project's configured formatter                              |
+| `verify-tests.sh`               | PostToolUse — Write/Edit/MultiEdit   | Runs the test suite after source writes; surfaces failures immediately                          |
 
-Hooks use exit code `2` to hard-block (Claude Code stops the tool call). Exit code `0` allows.
+PreToolUse hooks use exit code `2` to hard-block (Claude Code stops the tool call). Exit code `0` allows.
 
 ---
 
