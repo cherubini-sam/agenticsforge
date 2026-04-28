@@ -1,6 +1,8 @@
 ---
 name: code-review
 description: "Systematic code review for quality, security, and protocol compliance. Use when reviewing PRs, auditing diffs, validating code against quality gates, or performing OWASP security checks."
+when_to_use: "When reviewing PRs before merge, auditing a branch diff for security vulnerabilities, checking OWASP Top 10 compliance, or validating code against the project's quality gates."
+allowed-tools: [Bash, Read, Grep]
 ---
 
 # Code Review

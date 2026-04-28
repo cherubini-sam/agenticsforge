@@ -1,6 +1,8 @@
 ---
 name: test-generation
 description: "Unit and integration test generation, language-agnostic. Use when writing new tests, expanding coverage, generating fixtures, or setting up the test infrastructure for any project regardless of stack."
+when_to_use: "When writing new unit or integration tests, expanding coverage for an under-tested module, generating fixtures, setting up test infrastructure, or adding property-based or mutation testing layers."
+allowed-tools: [Bash, Read]
 ---
 
 # Test Generation

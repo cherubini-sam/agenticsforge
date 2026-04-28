@@ -1,6 +1,8 @@
 ---
 name: refactoring
 description: "Coverage-first safe refactoring: extract method, rename, DRY consolidation, dependency injection. Use when improving code structure, eliminating duplication, or restructuring modules without changing behavior."
+when_to_use: "When restructuring code without changing behavior, eliminating duplication across 3+ locations, extracting methods, renaming or moving modules to their correct layer, or applying dependency injection."
+allowed-tools: [Bash, Read, Grep]
 ---
 
 # Refactoring

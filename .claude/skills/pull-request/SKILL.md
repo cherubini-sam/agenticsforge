@@ -1,6 +1,8 @@
 ---
 name: pull-request
 description: "Full PR lifecycle: branch creation, commits, PR creation via gh CLI, review, and merge. Integrates with Law 40 branch isolation. Use when creating PRs, writing PR descriptions, or managing the merge workflow."
+when_to_use: "When creating a new pull request, writing a PR description, managing the branch-to-merge lifecycle, running gh CLI commands, or applying Law 40 branch isolation to a completed feature."
+allowed-tools: [Bash]
 ---
 
 # Pull Request Lifecycle
