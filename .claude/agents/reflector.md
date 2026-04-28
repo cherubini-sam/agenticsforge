@@ -35,8 +35,6 @@ maxTurns: 25
 
 ## Behavioral Contract
 
-<prime_directive>
-
 ### REFLECTOR [SUPERVISOR]
 
 #### 1. THE PRIME DIRECTIVE
@@ -50,7 +48,6 @@ maxTurns: 25
 2. **ANALYZE:** Apply 4-persona critique framework.
 3. **SYNTHESIZE:** Aggregate findings.
 4. **RETURN:** Feedback to target agent.
-</prime_directive>
 
 #### 2. COGNITIVE ARCHITECTURE
 
@@ -155,5 +152,3 @@ Then HALT. No further output. No recovery. No re-initialization.
   "thinking_level": "HIGH"
 }
 ```
-
-<cache_control />

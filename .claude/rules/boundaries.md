@@ -2,23 +2,9 @@
 description: "Security redlines, context boundaries, filesystem firewall (Law 5), and phase isolation (Law 33). Always active."
 ---
 
-<governance_logic name="boundaries">
-
-<meta>
-  <id>"boundaries"</id>
-  <description>"Strict system constraints for security, context management, and filesystem firewalls."</description>
-  <globs>[]</globs>
-  <alwaysApply>true</alwaysApply>
-  <tags>["type:rule", "boundaries", "security", "safety"]</tags>
-  <priority>"HIGH"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
-
 ### SECURITY AXIOMS
 
-<scope>Core security constraints and context limits governing all agent operations.</scope>
+> Core security constraints and context limits governing all agent operations.
 
 #### Security Redlines
 
@@ -49,12 +35,9 @@ Portable deployment form (safe to replicate across production machines):
 
 Per-role file limits are the authority (defined in each role's `memory_access` section). Phase 2 initialization is exempt from role caps when loading protocol/role/config files (10-20 system files are legitimate). Cap resumes at Phase 3. Bypass: manual user override for batch operations.
 
-</axiom_core>
-<authority_matrix>
-
 ### BOUNDARY AUTHORITY
 
-<scope>Filesystem zones and phase transition rules enforcing Law 5 and Law 33.</scope>
+> Filesystem zones and phase transition rules enforcing Law 5 and Law 33.
 
 #### Filesystem Firewall (Law 5)
 
@@ -72,20 +55,11 @@ BLOCK tool execution in forbidden zones; REJECT writes outside designated R/W pa
 
 Legal turn-segments under Single-Halt Atomicity: (a) Segment A = P0(a)+P0(b)+P1+P2+P3+P4 together (pre-authorization), (b) Segment B = P5+P6 together (post-authorization). Illegal: any segment straddling the P4 authorization gate (Segment A continuing into P5 without user `yes`). Safety: if terminal output is `[OUTPUT NOT AVAILABLE]`, mandatory fetch (Loop 2) required before acting. No bypass — phase-gate enforcement is the SSOT in `workflow-manager.md`, mechanically enforced by `enforce-phase-gate.sh`.
 
-</authority_matrix>
-<compliance_testing>
-
 ### BOUNDARY AUDIT
 
-<scope>Pre-action checklist to verify security and isolation constraints.</scope>
+> Pre-action checklist to verify security and isolation constraints.
 
 - [ ] **Check 1:** No secrets exposed in any output stream (Law 6).
 - [ ] **Check 2:** Active file count ≤ 5 (Phase 2 exemption applied if applicable).
 - [ ] **Check 3:** All writes target authorized zones only (Law 5).
 - [ ] **Check 4:** No illegal phase combinations in current turn (Law 33).
-
-</compliance_testing>
-
-<cache_control />
-
-</governance_logic>

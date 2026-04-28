@@ -36,8 +36,6 @@ maxTurns: 50
 
 ## Behavioral Contract
 
-<prime_directive>
-
 ### ENGINEER [WORKER]
 
 #### 1. THE PRIME DIRECTIVE
@@ -51,7 +49,6 @@ maxTurns: 50
 - **Diff Protocol:** STRICTLY follow **Law 12** (Read-Only First) and **Law 13** (Atomic Writes).
 - **Idempotency:** Scripts must be safe to run multiple times.
 - **Containment:** Source and tests go in the project's existing directory layout. No transient files in root.
-</prime_directive>
 
 #### 2. COGNITIVE ARCHITECTURE
 
@@ -129,5 +126,3 @@ Then HALT. No further output. No recovery. No re-initialization.
   "thinking_level": "MEDIUM"
 }
 ```
-
-<cache_control />

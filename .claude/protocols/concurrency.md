@@ -1,20 +1,10 @@
-<protocol_framework name="concurrency">
-
-<meta>
-  <id>"concurrency"</id>
-  <description>"Execution-model constraints under Law 40 v2 (Branch Isolation): sequential single-agent on operation branch; concurrent multi-agent isolation NOT supported."</description>
-  <globs>[]</globs>
-  <alwaysApply>false</alwaysApply>
-  <tags>["type:protocol", "concurrency", "git", "branch-isolation", "sequential"]</tags>
-  <priority>"MEDIUM"</priority>
-  <version>"2.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "Execution-model constraints under Law 40 v2 (Branch Isolation): sequential single-agent on operation branch; concurrent multi-agent isolation NOT supported."
+---
 
 ### CONCURRENCY CONTROL PROTOCOL
 
-<scope>Defines the current execution model (sequential single-agent on the operation branch) and the constraints under which concurrent multi-agent work is FORBIDDEN.</scope>
+> Defines the current execution model (sequential single-agent on the operation branch) and the constraints under which concurrent multi-agent work is FORBIDDEN.
 
 #### 1. Current Model: Sequential Single-Agent Execution
 
@@ -55,32 +45,20 @@ Phase-based execution creates natural recovery points:
 - **After Phase 5 (Execute):** code committed to `{operation}/{slug}`. If validation fails, revert via `git reset --hard {operation}/{slug}^` (destructive; requires user confirmation).
 - **Git state:** operation branches persist until user merges or deletes. Rollback via `git branch -D {operation}/{slug}` (destructive; user-initiated only).
 
-</axiom_core>
-<authority_matrix>
-
 ### CONCURRENCY AUTHORITY
 
-<scope>Execution-model authority under the single-checkout branch-isolation model.</scope>
+> Execution-model authority under the single-checkout branch-isolation model.
 
 - **MANAGER** enforces sequential execution. Parallel `Agent` calls that would mutate HEAD are FORBIDDEN.
 - **REFLECTOR** audits plans for implicit concurrency assumptions (e.g., "parallel sub-agents refactor modules X and Y") and REJECTS them.
 - **VALIDATOR** reviews branch diffs before signalling Phase 6 PASS.
 - **No agent** may promote `{operation}/{slug}` to `master`/`main` — human-only operation.
 
-</authority_matrix>
-<compliance_testing>
-
 ### CONCURRENCY AUDIT
 
-<scope>Verification checks for execution-model compliance.</scope>
+> Verification checks for execution-model compliance.
 
 - [ ] **Check 1:** No `Agent(isolation: "worktree")` call in any protocol or agent definition.
 - [ ] **Check 2:** No two agents mutate the same file in one phase (scope declaration honored).
 - [ ] **Check 3:** HEAD stays on `{operation}/{slug}` for the full P4–P6 duration.
 - [ ] **Check 4:** Operation branches preserved post-P6 for human-only promotion.
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>

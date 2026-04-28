@@ -1,20 +1,10 @@
-<protocol_framework name="anti_patterns">
-
-<meta>
-  <id>"anti_patterns"</id>
-  <description>"Common anti-patterns, guards, and recovery protocols."</description>
-  <globs>[]</globs>
-  <alwaysApply>false</alwaysApply>
-  <tags>["type:protocol", "shared", "anti-patterns", "safety"]</tags>
-  <priority>"LOW"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "Common anti-patterns, guards, and recovery protocols."
+---
 
 ### ANTI-PATTERNS & RECOVERY
 
-<scope>Identifies operational risks and defines recovery protocols to prevent systemic failures and context bloat.</scope>
+> Identifies operational risks and defines recovery protocols to prevent systemic failures and context bloat.
 
 #### 1. SAFETY GUARDRAILS (IMMUTABLE)
 
@@ -138,12 +128,9 @@
 **Failure:** Each API call + response permanently occupies context.
 **Fallback:** Limit to 3 API calls and summarize.
 
-</axiom_core>
-<authority_matrix>
-
 ### WORKFLOW AUTHORITY
 
-<scope>Defines strict enforcement rules for task management and phase transitions.</scope>
+> Defines strict enforcement rules for task management and phase transitions.
 
 #### 7. WORKFLOW ANTI-PATTERNS (STRICT ENFORCEMENT)
 
@@ -162,19 +149,9 @@
 **Symptom:** `task.md` does not strictly follow `.claude/resources/task.md`.
 **Action:** SYSTEM FAILURE. Delete `task.md` and recreate it using the template EXACTLY.
 
-
-</authority_matrix>
-<compliance_testing>
-
 ### COMPLIANCE AUDIT
 
-<scope>Validation steps for common workflow and technical anti-patterns.</scope>
+> Validation steps for common workflow and technical anti-patterns.
 
 - [ ] **Check 1:** Verify JSON routing blocks are absolute first characters.
 - [ ] **Check 2:** Confirm task.md exists and is being updated in tandem with work.
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>

@@ -1,20 +1,10 @@
-<protocol_framework name="observability">
-
-<meta>
-  <id>"observability"</id>
-  <description>"Standards for logging, monitoring, and debugging output."</description>
-  <globs>[]</globs>
-  <alwaysApply>false</alwaysApply>
-  <tags>["type:protocol", "observability", "logging", "monitoring"]</tags>
-  <priority>"LOW"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "Standards for logging, monitoring, and debugging output."
+---
 
 ### OBSERVABILITY PROTOCOL [THE EYE]
 
-<scope>Defines trace schema, monitoring metrics, and log structure for all agent actions.</scope>
+> Defines trace schema, monitoring metrics, and log structure for all agent actions.
 
 #### 1. Trace Schema
 
@@ -94,12 +84,9 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 | VS Code extension | Inherits parent shell env when launched from a terminal session | No extra setup if VS Code launched via `code` from a login shell |
 | JetBrains plugin | Inherits parent shell env when IDE launched from terminal | No extra setup if JetBrains launched via CLI from a login shell |
 
-</axiom_core>
-<authority_matrix>
-
 ### ALERTING & EXPORT AUTHORITY
 
-<scope>Defines alert severity tiers and OpenTelemetry export targets for operational governance.</scope>
+> Defines alert severity tiers and OpenTelemetry export targets for operational governance.
 
 #### 4. Alerting Rules
 
@@ -107,21 +94,12 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 **Warning (Batched):** Error rate >5% for 15min | latency p95 >30s | session tokens >400K | cache hit <30%.
 **Info (Daily):** Cost summary | agent utilization | top errors.
 
-</authority_matrix>
-<compliance_testing>
-
 ### PRIVACY & RETENTION AUDIT
 
-<scope>Validation rules for data masking, retention enforcement, and compliance with Law 6 (Secret Sanitization).</scope>
+> Validation rules for data masking, retention enforcement, and compliance with Law 6 (Secret Sanitization).
 
 #### 5. Privacy & Security
 
 - API keys: `sk-...****` | Passwords: `[REDACTED]` | PII: Hash or mask.
 
 **Retention:** Traces 7d | Logs 30d | Metrics 90d | Errors 90d.
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>

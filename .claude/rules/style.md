@@ -2,23 +2,9 @@
 description: "Hygiene, formatting, and implementation standards: language lock (Law 18), zero-fluff output, code standards, artifact schema. Always active."
 ---
 
-<governance_logic name="style">
-
-<meta>
-  <id>"style"</id>
-  <description>"Hygiene, formatting, and implementation standards for artifacts and code."</description>
-  <globs>[]</globs>
-  <alwaysApply>true</alwaysApply>
-  <tags>["type:rule", "style", "formatting", "hygiene"]</tags>
-  <priority>"HIGH"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
-
 ### STYLE AXIOMS
 
-<scope>Core language, formatting, and code hygiene standards governing all agent output and artifact generation.</scope>
+> Core language, formatting, and code hygiene standards governing all agent output and artifact generation.
 
 #### Language (Law 18)
 
@@ -32,12 +18,9 @@ Zero Fluff. `thinking_process` tag MANDATORY for complex reasoning and multi-too
 
 Type hints mandatory (static analysis compatibility). Docstrings: Google Style. `try/except` required on all file and network I/O. Prohibited: `pass`, `TODO`, commented-out blocks, `...` markers in production. Delete old files immediately after successful refactor.
 
-</axiom_core>
-<authority_matrix>
-
 ### ARTIFACT AUTHORITY
 
-<scope>Enforcement hierarchy for artifact schema compliance and coding standard violation handling.</scope>
+> Enforcement hierarchy for artifact schema compliance and coding standard violation handling.
 
 #### Artifact Schema (Law 33)
 
@@ -52,20 +35,11 @@ Scope: `task.md` and `implementation_plan.md` in the artifact sandbox. H2 (`##`)
 | Placeholder / pass-zombie in production | HALT execution; DENY commit |
 | Artifact hierarchy or history broken | REJECT update |
 
-</authority_matrix>
-<compliance_testing>
-
 ### STYLE AUDIT
 
-<scope>Pre-output checklist to enforce hygiene standards on every agent turn.</scope>
+> Pre-output checklist to enforce hygiene standards on every agent turn.
 
 - [ ] **Check 1:** Output language matches session language (Law 18).
 - [ ] **Check 2:** No emojis in code, filenames, or system artifacts (Law 19).
 - [ ] **Check 3:** No TODO / TBD / `...` / `pass` in production code (Law 11).
 - [ ] **Check 4:** Artifact hierarchy uses H2 + checkbox syntax (Law 33).
-
-</compliance_testing>
-
-<cache_control />
-
-</governance_logic>

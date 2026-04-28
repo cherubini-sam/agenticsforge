@@ -1,20 +1,10 @@
-<protocol_framework name="cicd">
-
-<meta>
-  <id>"cicd"</id>
-  <description>"Headless mode integration, CI/CD pipeline patterns, and automated agent execution for Claude Code."</description>
-  <globs>[]</globs>
-  <alwaysApply>false</alwaysApply>
-  <tags>["type:protocol", "cicd", "headless", "automation"]</tags>
-  <priority>"LOW"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "Headless mode integration, CI/CD pipeline patterns, and automated agent execution for Claude Code."
+---
 
 ### CI/CD INTEGRATION PROTOCOL
 
-<scope>Defines patterns for running Claude Code in non-interactive (headless) mode within CI/CD pipelines, automated review flows, and scheduled tasks.</scope>
+> Defines patterns for running Claude Code in non-interactive (headless) mode within CI/CD pipelines, automated review flows, and scheduled tasks.
 
 #### 1. Headless Mode
 
@@ -88,12 +78,9 @@ Claude Code supports non-interactive execution via `claude -p` (print mode). In 
 - **Idempotency:** Headless runs MUST be safe to retry (Law 15).
 - **State isolation:** Each headless run starts with a fresh context. No session carryover.
 
-</axiom_core>
-<authority_matrix>
-
 ### CI/CD AUTHORITY
 
-<scope>Defines who configures and approves headless agent pipelines.</scope>
+> Defines who configures and approves headless agent pipelines.
 
 #### 6. Authority
 
@@ -101,20 +88,11 @@ Claude Code supports non-interactive execution via `claude -p` (print mode). In 
 - **Tool allowlists** for headless agents MUST be explicitly defined in CI config — no blanket `--allowedTools "*"`.
 - **Production deployments** via headless agents are BLOCKED without explicit `FORCE_DEPLOY=true` environment variable.
 
-</authority_matrix>
-<compliance_testing>
-
 ### CI/CD AUDIT
 
-<scope>Verification checks for headless execution safety.</scope>
+> Verification checks for headless execution safety.
 
 - [ ] **Check 1:** Headless agent has explicit `--allowedTools` (no wildcard).
 - [ ] **Check 2:** Maximum execution time configured.
 - [ ] **Check 3:** No destructive operations in tool allowlist unless explicitly approved.
 - [ ] **Check 4:** Exit codes match contract (0/1/2).
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>

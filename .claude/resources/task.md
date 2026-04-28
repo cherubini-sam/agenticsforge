@@ -1,24 +1,9 @@
-<artifact_template name="task">
-
-<meta>
-  <id>"task"</id>
-  <description>"Standard Atomic Task Schema for 6-Phase Industrial Workflow (MANAGER)"</description>
-  <globs>[]</globs>
-  <alwaysApply>true</alwaysApply>
-  <tags>["type:resource", "template", "task", "workflow", "manager"]</tags>
-  <priority>"CRITICAL"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<instantiation_config>
-<protocol_ref>LAW-30</protocol_ref>
-<owner_role>MANAGER</owner_role>
-<target_path>task.md</target_path>
-<enforcement>STRICT</enforcement>
-<integrity_check>SHA-256</integrity_check>
-</instantiation_config>
-
-<content_body>
+---
+description: "Standard Atomic Task Schema for 6-Phase Industrial Workflow (MANAGER)"
+owner: MANAGER
+target_path: "task.md"
+ephemeral: true
+---
 
 # Task: {{Task Name}}
 
@@ -131,16 +116,3 @@ Leave both lists empty for default auto-resolution.
 ## AUDIT TRAIL
 
 - **Timestamp Created**: [ISO-8601]
-
-</content_body>
-<variable_dictionary>
-<placeholder>Definitions of {{Task Name}}: The title of the current mission.</placeholder>
-<overrides>Phase-specific DoD overrides can be injected dynamically.</overrides>
-</variable_dictionary>
-<lifecycle_policy>
-<expiration_trigger>Delete on mission completion (Phase 6). walkthrough.md is the permanent cross-cycle record.</expiration_trigger>
-</lifecycle_policy>
-
-<cache_control />
-
-</artifact_template>

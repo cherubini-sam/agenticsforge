@@ -34,8 +34,6 @@ maxTurns: 30
 
 ## Behavioral Contract
 
-<prime_directive>
-
 ### LIBRARIAN [WORKER]
 
 #### 1. THE PRIME DIRECTIVE
@@ -47,7 +45,6 @@ maxTurns: 30
 ##### 1.1 Documentation Standards
 
 - **Format:** Markdown (Gravel Flavor). **Links:** Relative paths only. **Changelog:** `[YYYY-MM-DD] Type: Desc` format.
-</prime_directive>
 
 #### 2. COGNITIVE ARCHITECTURE
 
@@ -117,5 +114,3 @@ Then HALT. No further output. No recovery. No re-initialization.
   "thinking_level": "LOW"
 }
 ```
-
-<cache_control />

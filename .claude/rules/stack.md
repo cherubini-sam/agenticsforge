@@ -2,23 +2,9 @@
 description: "Technical stack specifications: supported models, 3-tier routing, token budget, and cost controls. Always active."
 ---
 
-<governance_logic name="stack">
-
-<meta>
-  <id>"stack"</id>
-  <description>"Technical stack specifications and token budget policing."</description>
-  <globs>[]</globs>
-  <alwaysApply>true</alwaysApply>
-  <tags>["type:rule", "stack", "performance", "environment"]</tags>
-  <priority>"HIGH"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
-
 ### TOKEN & COST AXIOMS
 
-<scope>Core token budget and cost thresholds governing all agent inference operations across supported model families.</scope>
+> Core token budget and cost thresholds governing all agent inference operations across supported model families.
 
 #### LLM Runtime — Current Models (Recommended)
 
@@ -130,30 +116,18 @@ Omitting this block before an `Agent` call = Law 1 violation → SESSION TERMINA
 
 Bypass: manual user override for large-scale codebase migrations.
 
-</axiom_core>
-<authority_matrix>
-
 ### STACK AUTHORITY
 
-<scope>Authoritative stack configuration. Deviations require user approval.</scope>
+> Authoritative stack configuration. Deviations require user approval.
 
 LOG WARNING and notify user on any stack deviation. Bypass: explicit user override for environment-specific configurations.
 
-</authority_matrix>
-<compliance_testing>
-
 ### STACK AUDIT
 
-<scope>Pre-execution checklist to validate stack and token budget compliance.</scope>
+> Pre-execution checklist to validate stack and token budget compliance.
 
 - [ ] **Check 1:** Active model matches a recognized shard; shard loaded and immutable for session.
 - [ ] **Check 2:** Request token count < 50K; session total < 500K.
 - [ ] **Check 3:** Automated test suite present for all source code in the project's primary language.
 - [ ] **Check 4:** Infrastructure targets match authoritative stack configuration.
 - [ ] **Check 5:** Every `Agent` tool call preceded by a spawn-transparency JSON block in conversation output.
-
-</compliance_testing>
-
-<cache_control />
-
-</governance_logic>

@@ -1,20 +1,10 @@
-<protocol_framework name="phase_gate">
-
-<meta>
-  <id>"phase_gate"</id>
-  <description>"Phase Gate Protocol - Loaded FIRST on every turn, before routing."</description>
-  <globs>[]</globs>
-  <alwaysApply>true</alwaysApply>
-  <tags>["type:protocol", "gate", "phase1", "law30", "enforcement"]</tags>
-  <priority>"CRITICAL"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "Phase Gate Protocol - Loaded FIRST on every turn, before routing."
+---
 
 ### PHASE GATE PROTOCOL
 
-<scope>Enforces Law 30 (The Gatekeeper) to ensure task state synchronization before any research or execution actions.</scope>
+> Enforces Law 30 (The Gatekeeper) to ensure task state synchronization before any research or execution actions.
 
 > [!CRITICAL]
 > This protocol is loaded FIRST on every turn.
@@ -149,12 +139,9 @@ The Phase 1 Gate is PASSED when:
 **Failure:** Any condition unmet → create/reinitialize `task.md` → HALT current turn.
 **Fallback:** If template read fails, emit SESSION INVALID and halt.
 
-</axiom_core>
-<authority_matrix>
-
 ### BOOT SEQUENCE INTEGRATION
 
-<scope>Standardizes the order of operations for system initialization.</scope>
+> Standardizes the order of operations for system initialization.
 
 ```
 Boot Sequence Order (SSOT: CLAUDE.md Law 1):
@@ -173,19 +160,16 @@ Boot Sequence Order (SSOT: CLAUDE.md Law 1):
 └──────────────────────────────────────────────────────┘
 ```
 
-</authority_matrix>
-<compliance_testing>
-
 ### PHASE GATE TEST VECTORS
 
-<scope>Tests for gate-skipping or tool pollution during Phase 1.</scope>
+> Tests for gate-skipping or tool pollution during Phase 1.
 
 - [ ] **Vector 1:** `Grep` or `Bash` call when `task.md` is missing. (Expected: BLOCK + SESSION TERMINATION).
 - [ ] **Vector 2:** Phase 1 marks `[x]` but request is fresh. (Expected: STALE RECOVERY).
 
 ### NEGATIVE TEST VECTORS (Phase 0 Boot Gate)
 
-<scope>Documented failure patterns the boot gate (`enforce-boot-gate.sh`) must mechanically block. These replay the prior-session protocol violation that triggered the enforcement-hardening cycle.</scope>
+> Documented failure patterns the boot gate (`enforce-boot-gate.sh`) must mechanically block. These replay the prior-session protocol violation that triggered the enforcement-hardening cycle.
 
 **Vector N1 — Task-type exemption rationalization.** Fresh session, `prompt_intake.md` absent, user submits:
 
@@ -200,9 +184,3 @@ The `@file` references are expanded by the Claude Code harness BEFORE any PreToo
 **Vector N4 — Empty or malformed tool payload.** Any PreToolUse invocation with empty stdin or non-JSON payload → `enforce-boot-gate.sh` exits 2 (fail-closed). Prevents payload-injection bypass of the gate.
 
 **Acknowledged harness-level gap.** `@file` expansion runs at the Claude Code harness layer, not the agent layer; PreToolUse hooks never see it. Mitigation is documentary (this section + the No-Task-Type-Exemption clause in CLAUDE.md) plus the mechanical block on the FIRST agent-level tool call that follows — sufficient to catch the workflow regardless of how much harness-injected context precedes it.
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>

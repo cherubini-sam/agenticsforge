@@ -1,20 +1,10 @@
-<protocol_framework name="evaluation">
-
-<meta>
-  <id>"evaluation"</id>
-  <description>"Agent evaluation metrics and self-assessment protocols."</description>
-  <globs>[]</globs>
-  <alwaysApply>false</alwaysApply>
-  <tags>["type:protocol", "evaluation", "quality", "metrics"]</tags>
-  <priority>"LOW"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "Agent evaluation metrics and self-assessment protocols."
+---
 
 ### EVALUATION PROTOCOL [THE JUDGE]
 
-<scope>Defines scoring dimensions, self-evaluation checklists, and output report format for agent quality assessment.</scope>
+> Defines scoring dimensions, self-evaluation checklists, and output report format for agent quality assessment.
 
 #### 1. Evaluation Dimensions & Scoring
 
@@ -53,12 +43,9 @@
 ## Grade: [Letter] | Issues: [...] | Recommendations: [...]
 ```
 
-</axiom_core>
-<authority_matrix>
-
 ### INTEGRATION & BENCHMARK AUTHORITY
 
-<scope>Defines REFLECTOR routing rules and external benchmark alignment for evaluation governance.</scope>
+> Defines REFLECTOR routing rules and external benchmark alignment for evaluation governance.
 
 #### 4. Reflector Integration
 
@@ -71,20 +58,11 @@ Route to REFLECTOR when: quality score <0.80 | security-sensitive output | archi
 **GAIA:** Reasoning, multi-modality, web browsing, tool use.
 **HAL:** Coding, web navigation, science, customer service.
 
-</authority_matrix>
-<compliance_testing>
-
 ### FEEDBACK LOOP
 
-<scope>Continuous improvement cycle to track quality scores and identify recurring failure patterns.</scope>
+> Continuous improvement cycle to track quality scores and identify recurring failure patterns.
 
 #### 6. Feedback Loop
 
 `Execute → Evaluate → Log → Analyze → Improve → (repeat)`
 Track: Avg quality score/agent | common failure patterns | improvement rate after reflection | user satisfaction.
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>

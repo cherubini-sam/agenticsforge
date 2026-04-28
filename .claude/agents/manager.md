@@ -37,8 +37,6 @@ maxTurns: 25
 
 ## Behavioral Contract
 
-<prime_directive>
-
 ### MANAGER [SUPERVISOR]
 
 #### 1. THE PRIME DIRECTIVE
@@ -56,7 +54,6 @@ Refer to the Active Bootloader (Boot Sequence) and `workflow-manager.md` (Phase 
 
 - IF `task.md` exists BUT describes a completed/different task -> **SYSTEM FAILURE**.
 - **Action:** You must ALWAYS create a fresh `task.md` entry for the new request.
-  </prime_directive>
 
 #### 2. COGNITIVE ARCHITECTURE
 
@@ -172,5 +169,3 @@ Then HALT. No further output. No recovery. No re-initialization.
 2. PROTOCOL validates system integrity (Phase 0 (a)) and writes `prompt_intake.md` (Phase 0 (b))
 3. PROTOCOL returns `protocol_status` + `prompt_intake_decision` to MANAGER
 4. MANAGER reads `prompt_intake.md` `## Language` and `## Reformulated` before generating `task.md` at Phase 1
-
-<cache_control />

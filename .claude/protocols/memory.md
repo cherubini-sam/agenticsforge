@@ -1,20 +1,10 @@
-<protocol_framework name="memory">
-
-<meta>
-  <id>"memory"</id>
-  <description>"Inter-session memory persistence hierarchy: User, Project, and Local memory tiers with pointer-based indexing."</description>
-  <globs>[]</globs>
-  <alwaysApply>false</alwaysApply>
-  <tags>["type:protocol", "memory", "persistence", "state"]</tags>
-  <priority>"HIGH"</priority>
-  <version>"1.0.0"</version>
-</meta>
-
-<axiom_core>
+---
+description: "Inter-session memory persistence hierarchy: User, Project, and Local memory tiers with pointer-based indexing."
+---
 
 ### MEMORY PERSISTENCE PROTOCOL
 
-<scope>Defines the 3-tier memory hierarchy, pointer-based indexing, and append-only write model for inter-session state persistence in Claude Code.</scope>
+> Defines the 3-tier memory hierarchy, pointer-based indexing, and append-only write model for inter-session state persistence in Claude Code.
 
 #### 1. Memory Hierarchy
 
@@ -85,12 +75,9 @@ At session start, orchestrator:
 - Contradictory entries → resolve in favor of most recent, annotate the older entry.
 - Project Memory entries MUST be reviewed before committing to version control.
 
-</axiom_core>
-<authority_matrix>
-
 ### MEMORY AUTHORITY
 
-<scope>Defines which agents can read and write to each memory tier.</scope>
+> Defines which agents can read and write to each memory tier.
 
 #### 6. Access Control
 
@@ -104,20 +91,11 @@ At session start, orchestrator:
 | REFLECTOR | No | Read | No |
 | PROTOCOL | No | Read | No |
 
-</authority_matrix>
-<compliance_testing>
-
 ### MEMORY AUDIT
 
-<scope>Verification checks for memory persistence compliance.</scope>
+> Verification checks for memory persistence compliance.
 
 - [ ] **Check 1:** Memory index (`memory.md`) is pointer-based, not content-heavy (<500 tokens).
 - [ ] **Check 2:** Domain files use append-only writes (no overwrites of existing entries).
 - [ ] **Check 3:** Memory tier matches content scope (personal → User, team → Project, private → Local).
 - [ ] **Check 4:** Stale entries (>30 days) archived.
-
-</compliance_testing>
-
-<cache_control />
-
-</protocol_framework>
