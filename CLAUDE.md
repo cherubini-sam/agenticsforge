@@ -2,13 +2,11 @@
 
 > **Status:** ACTIVE | **Runtime:** Claude Code (CLI, VS Code, JetBrains) | **Version:** 2.0.0
 
-<important if="writing_artifacts">
-**Artifact Containment (Law 5).** All mandatory workflow artifacts (`task.md`, `implementation_plan.md`, `prompt_intake.md`, `walkthrough.md`, reports, critique outputs) live EXCLUSIVELY in `.claude/artifacts/`. The directory is LOCAL-ONLY — never `git add`, never commit, never narrow the `.gitignore`. Writes on `master`/`main` are restricted to the artifact sandbox by `block-destructive.sh`.
-</important>
+> [!IMPORTANT]
+> **Artifact Containment (Law 5).** All mandatory workflow artifacts (`task.md`, `implementation_plan.md`, `prompt_intake.md`, `walkthrough.md`, reports, critique outputs) live EXCLUSIVELY in `.claude/artifacts/`. The directory is LOCAL-ONLY — never `git add`, never commit, never narrow the `.gitignore`. Writes on `master`/`main` are restricted to the artifact sandbox by `block-destructive.sh`.
 
-<important if="destructive_op">
-**Destructive Guard (Law 8 + Law 40).** `rm -rf /`, `git push --force` on protected branches, `DROP TABLE`, `--no-verify`, and writes outside the artifact sandbox while on `master`/`main` are HARD-BLOCKED by `block-destructive.sh`. Operation work happens on `{op}/{slug}` branches only; promotion to `main` is a human-only operation.
-</important>
+> [!IMPORTANT]
+> **Destructive Guard (Law 8 + Law 40).** `rm -rf /`, `git push --force` on protected branches, `DROP TABLE`, `--no-verify`, and writes outside the artifact sandbox while on `master`/`main` are HARD-BLOCKED by `block-destructive.sh`. Operation work happens on `{op}/{slug}` branches only; promotion to `main` is a human-only operation.
 
 ## MODEL DETECTION
 
