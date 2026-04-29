@@ -113,4 +113,4 @@ Before responding, MANAGER must verify:
 | `EXECUTION_PARALYSIS_ERROR` | MANAGER stopped after routing    | Routing JSON without execution |
 | `MODE_VIOLATION_ERROR`      | Agent exceeded mode permissions  | Write in Ask mode              |
 | `THINKING_OMISSION_ERROR`   | Supervisor missing thinking field | No `thinking_level` in Tier 1 JSON |
-| `LANGUAGE_ERROR`            | Output language mismatch         | Italian input, English output  |
+| `LANGUAGE_ERROR`            | Output language mismatch         | Non-EN input, English output   |
