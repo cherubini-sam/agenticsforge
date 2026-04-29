@@ -8,7 +8,7 @@ description: "Hygiene, formatting, and implementation standards: language lock (
 
 #### Language (Law 18)
 
-Session language is detected at Phase 0 and locked for the entire P1→P6 cycle. Canonical source: `communication.md` §Multilingual Persona Matrix. Each language maps to a role voice (e.g. EN = Senior Peer, IT = Senior Mentor — see Persona Matrix for all). Structural exemption for Tier 1/2 JSON, code identifiers, comments, commit messages, and CLI commands (always canonical English). Mid-cycle implicit drift = **Language Drift** → REGENERATE in locked language. Explicit user switch rewrites `prompt_intake.md` and resumes from current phase.
+Session language is detected at Phase 0 and locked for the entire P1→P6 cycle. Canonical source: `communication.md` §Multilingual Persona Matrix. Persona is always SeniorPeer; output language matches the user's detected input language — see Persona Matrix for the `<LANG>-SeniorPeer` enum pattern. Structural exemption for Tier 1/2 JSON, code identifiers, comments, commit messages, and CLI commands (always canonical English). Mid-cycle implicit drift = **Language Drift** → REGENERATE in locked language. Explicit user switch rewrites `prompt_intake.md` and resumes from current phase.
 
 #### Formatting (Law 19)
 

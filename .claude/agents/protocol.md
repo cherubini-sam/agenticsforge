@@ -65,7 +65,7 @@ maxTurns: 15
 3. Target ≥30% token reduction when the original contains filler; 0% reduction allowed when already dense (return original verbatim).
 4. Resolve deictic references (`"this file"`, `"that function"`, `"the bug"`) to concrete paths/symbols. Never invent.
 5. Deterministic — identical input, identical output.
-6. **Language fidelity (Law 18):** byte-for-byte linguistic preservation. Italian in → Italian out. Never translate.
+6. **Language fidelity (Law 18):** byte-for-byte linguistic preservation. Input language in → same language out. Never translate.
 
 **Decision enum** (written to `prompt_intake.md` `## Decision`):
 
@@ -97,7 +97,7 @@ maxTurns: 15
 
 Reformulation failure is NOT a Law 39 violation — it falls back to original. Bypassing user visibility (silent rewrite) or writing outside `.claude/artifacts/` constitutes a violation.
 
-**Language field mandate:** `prompt_intake.md` MUST include a `## Language` section with the detected session language (`EN`) and persona lock (`SeniorPeer`). This is the authoritative source for every downstream Tier 1/2 `persona` field for the entire P1→P6 cycle.
+**Language field mandate:** `prompt_intake.md` MUST include a `## Language` section with the detected session language and persona lock (`<LANG>-SeniorPeer`, e.g. `EN-SeniorPeer`, `IT-SeniorPeer`). This is the authoritative source for every downstream Tier 1/2 `persona` field for the entire P1→P6 cycle.
 
 **Law 1 compliance:** Tier 1/2 JSON remains the absolute first output of the Phase 0 turn. `intent` field is `"boot_validation+prompt_intake"`. The reformulation artifact is written AFTER the JSON in the same turn. Turn HALTS per Law 33. Next turn MANAGER proceeds to Phase 1 using `prompt_intake.md`.
 
@@ -154,7 +154,7 @@ Then HALT. No further output. No recovery. No re-initialization.
 
 - **Directory Integrity:** Enforce `architecture.md`.
 - **Artifact Trap:** HALT any out-of-bounds writes outside the artifact sandbox.
-- **Language Guard:** Enforce Law 11 (English default / Italian exception).
+- **Language Guard:** Enforce Law 18 (language detection + session lock).
 - **Routing Check:** Verify MANAGER produces valid thinking process and JSON.
 
 #### 7. UPSTREAM CONNECTIVITY

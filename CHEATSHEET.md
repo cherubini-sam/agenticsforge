@@ -209,6 +209,10 @@ This is the deliverable form bundled with Agentics Forge. For a global install, 
       {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/create-session-lock.sh", "timeout": 5000 },
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/validate-task-schema.sh", "timeout": 10000 },
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/validate-plan-schema.sh", "timeout": 10000 },
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/validate-intake-schema.sh", "timeout": 10000 },
           { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/format-code.sh", "timeout": 30000 },
           { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/verify-tests.sh", "timeout": 60000 }
         ]
@@ -231,6 +235,10 @@ This is the deliverable form bundled with Agentics Forge. For a global install, 
 | `enforce-phase-gate.sh`         | PreToolUse — read/write/exec tools   | Blocks tool calls until `task.md` (Phase 1) and `implementation_plan.md` (Phase 3) exist        |
 | `block-destructive.sh`          | PreToolUse — Bash/Write/Edit/Agent   | Blocks `rm -rf /`, `git push --force`, writes to `main`/`master`, `--no-verify`                 |
 | `enforce-spawn-transparency.sh` | PreToolUse — `Agent` / `Task`        | Blocks sub-agent spawns missing the `sub_agent_spawn` JSON block (Law 1 extension)              |
+| `create-session-lock.sh`        | PostToolUse — Write/Edit/MultiEdit   | Writes `.session-lock` on P0(b) artifact write; prevents concurrent-session interference       |
+| `validate-task-schema.sh`       | PostToolUse — Write/Edit/MultiEdit   | Rejects writes to `task.md` that don't match canonical schema; forces stamper use              |
+| `validate-plan-schema.sh`       | PostToolUse — Write/Edit/MultiEdit   | Rejects writes to `implementation_plan.md` that don't match canonical schema                   |
+| `validate-intake-schema.sh`     | PostToolUse — Write/Edit/MultiEdit   | Rejects writes to `prompt_intake.md` that don't match canonical schema                         |
 | `format-code.sh`                | PostToolUse — Write/Edit/MultiEdit   | Auto-formats changed files via the project's configured formatter                              |
 | `verify-tests.sh`               | PostToolUse — Write/Edit/MultiEdit   | Runs the test suite after source writes; surfaces failures immediately                          |
 
