@@ -21,6 +21,9 @@ ephemeral: true
 > 4. **TERMINAL**: `task.md`, `implementation_plan.md`, and `prompt_intake.md` are HARD-DELETED at the close of Phase 6. No archive, no rename, no move. Only `walkthrough.md` persists (append-only).
 > 5. **REUSABLE**: Any post-Phase-6 user input triggers a fresh instantiation from this template. The `task.md` slot is single-occupancy — never two tasks alive at once.
 
+> [!CRITICAL]
+> **VERBATIM REPRODUCTION DIRECTIVE**: This template MUST be copied byte-for-byte to `.claude/artifacts/task.md`. Only `{{Task Name}}` and `[ISO-8601]` are substituted. Removing sections, renaming sections, paraphrasing CRITICAL callouts, or substituting an alternate manifest shape (free-form `## Context` + `T-###` list, etc.) is a LAW-30 violation. Use `bash .claude/hooks/stamp-task.sh "<title>"` to instantiate. Hand-authored manifests are rejected at write time by `.claude/hooks/validate-task-schema.sh` (PostToolUse).
+
 ## HALT POLICY
 
 This cycle produces EXACTLY ONE interactive halt — the Phase 4 authorization request. Everything before the halt (boot validation, prompt intake, task manifest, context retrieval, implementation plan, REFLECTOR audit) runs in one continuous turn-segment. Everything after the halt (operation-branch creation, ENGINEER execution, VALIDATOR verification, walkthrough append, ephemeral deletion) runs in another continuous turn-segment.

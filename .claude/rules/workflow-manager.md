@@ -14,6 +14,18 @@ Turn 0: route EXCLUSIVELY to PROTOCOL agent (`intent: "boot_validation"`). Verif
 
 P1 Mandate: create or overwrite `task.md` using `task.md`. Stale Guard: missing or intent-mismatched `task.md` → STOP immediately. Velocity: HALT turn immediately after `task.md` creation. Bypass: explicit emergency debugging requested by user.
 
+##### Canonical Instantiation (LAW-30 Schema Enforcement)
+
+The three Phase ephemeral artifacts MUST be instantiated via byte-exact stamping from the canonical templates in `.claude/resources/`. Hand-authored manifests, plans, and intakes are LAW-30 violations and are rejected at write time by PostToolUse validators.
+
+| Artifact | Template | Stamper | Validator |
+| :--- | :--- | :--- | :--- |
+| `.claude/artifacts/task.md` | `.claude/resources/task.md` | `bash .claude/hooks/stamp-task.sh "<title>"` | `.claude/hooks/validate-task-schema.sh` |
+| `.claude/artifacts/implementation_plan.md` | `.claude/resources/implementation-plan.md` | `bash .claude/hooks/stamp-plan.sh "<title>"` | `.claude/hooks/validate-plan-schema.sh` |
+| `.claude/artifacts/prompt_intake.md` | `.claude/resources/prompt-intake.md` | `bash .claude/hooks/stamp-intake.sh "<session-slug>"` | `.claude/hooks/validate-intake-schema.sh` |
+
+Each validator runs as a `PostToolUse` hook on `Write|Edit|MultiEdit`, no-ops unless the affected path is its target artifact, and exits 2 with an itemized failure list on schema violation. Stampers `cp` the canonical template byte-for-byte and `sed` only the title and `[ISO-8601]` placeholder. Editing a template propagates automatically to all future instantiations. Free-form artifact shapes (`## Context` + `T-###` lists for `task.md`, free-form `## Design / ## Files Changed` for the plan, free-form `## Raw Prompt / ## Reformulated Intent` for the intake) are forbidden — write-time rejection forces the agent to re-stamp before advancing. Bypass: none.
+
 #### Branch Isolation (Law 40)
 
 Phase 4 Step 0 creates the operation branch directly on the main checkout: `git checkout {base}` (where `{base}` is either `master` or a stacked prior operation branch), then `git checkout -b {operation}/{slug}`. HEAD switches to the operation branch for Phases 4–6. Branch naming follows the conventional-commits prefix enum (`feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `ci`, `build`, `style`). The branch is pushed to `origin` on first commit (`git push -u origin {operation}/{slug}`), not on creation. Additionally, at Phase 6 close (before ephemeral deletion), MANAGER runs an idempotent `git push -u origin {operation}/{slug}` so the branch is guaranteed available on `origin` regardless of whether any commits produced an earlier push — this covers no-commit cycles and transient push failures. The push targets the operation branch only; `block-destructive.sh` continues to reject any push while HEAD is on `master`/`main` and any `--force` push. At Phase 6 completion, HEAD REMAINS on `{operation}/{slug}` — the branch is preserved for human-only promotion (merge to `master` is always a manual user operation). Agents NEVER merge into, push to, or switch HEAD back to `main`/`master` during a cycle. Bypass: none for Phase 4.

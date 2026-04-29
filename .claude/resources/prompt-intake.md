@@ -16,6 +16,9 @@ ephemeral: true
 > [!CRITICAL]
 > **SCOPE GATE**: MANDATORY at Phase 0 (session start) and at Workflow Re-entry (post-P6 fresh cycle). FORBIDDEN mid-session during Phases 2–6 — mid-session user messages pass through verbatim.
 
+> [!CRITICAL]
+> **VERBATIM REPRODUCTION DIRECTIVE**: This template MUST be copied byte-for-byte to `.claude/artifacts/prompt_intake.md`. Only `{{Session Slug}}` and `{{ISO-8601}}` are substituted at stamp time; the remaining `{{...}}` placeholders are filled by PROTOCOL during the Phase 0 (b) inference step. Removing sections, renaming sections, paraphrasing CRITICAL callouts, or substituting an alternate intake shape (free-form `## Raw Prompt` / `## Reformulated Intent`, etc.) is a LAW-30 violation. Use `bash .claude/hooks/stamp-intake.sh "<session-slug>"` to instantiate. Hand-authored intakes are rejected at write time by `.claude/hooks/validate-intake-schema.sh` (PostToolUse).
+
 ## Language
 
 - **Detected**: `<ISO-639-1 code, e.g. EN | IT | ES | FR>`

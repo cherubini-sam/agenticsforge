@@ -66,9 +66,17 @@ Once installed, every Claude Code session is governed by a strict 7-agent, 6-pha
 
 ## 🚀 Install
 
+> **Default mode: Project-Local (Mode 1).** The bundled `.claude/settings.json` ships with `${CLAUDE_PROJECT_DIR}` placeholders for every hook path — correct as-is for Mode 1. Modes 2 and 3 require a targeted `sed` rewrite to swap to `${HOME}`. The table below is the per-mode placeholder cheat sheet.
+
+| Mode | `settings.json` lives at | Hook command paths reference | Action required |
+| :--- | :--- | :--- | :--- |
+| **1 — Project-Local (default)** | `<project>/.claude/settings.json` | `${CLAUDE_PROJECT_DIR}/.claude/hooks/...` | **None** — bundled config is correct |
+| 2 — Global | `~/.claude/settings.json` | `${HOME}/.claude/hooks/...` | Wholesale `sed`: `${CLAUDE_PROJECT_DIR}` → `${HOME}` |
+| 3 — Hybrid | `<project>/.claude/settings.json` | `${HOME}/.claude/hooks/...` (hooks are global, settings stay project-local) | Targeted `sed`: only `${CLAUDE_PROJECT_DIR}/.claude/hooks` → `${HOME}/.claude/hooks` |
+
 ### Mode 1 — Project-Local
 
-Governance lives in the repo. Shared with the team via git.
+Governance lives in the repo. Shared with the team via git. **No path swap needed** — `${CLAUDE_PROJECT_DIR}` is the canonical project-local placeholder, resolved by Claude Code at session start.
 
 ```bash
 git clone https://github.com/cherubini-sam/agenticsforge.git /tmp/agenticsforge
@@ -76,6 +84,8 @@ git clone https://github.com/cherubini-sam/agenticsforge.git /tmp/agenticsforge
 cp -r /tmp/agenticsforge/.claude   /path/to/your-project/
 cp -r /tmp/agenticsforge/.githooks /path/to/your-project/
 cp    /tmp/agenticsforge/CLAUDE.md /path/to/your-project/CLAUDE.md
+
+# No path swap needed — ${CLAUDE_PROJECT_DIR} resolves to the project root automatically.
 ```
 
 Commit `.claude/`, `.githooks/`, and `CLAUDE.md`. Add the following to `.gitignore`:
@@ -96,22 +106,20 @@ git config core.hooksPath .githooks
 
 ### Mode 2 — Global
 
-Install once. Every Claude Code session on your machine loads this protocol, regardless of which project you open.
+Install once. Every Claude Code session on your machine loads this protocol, regardless of which project you open. **Wholesale path swap required** — `${CLAUDE_PROJECT_DIR}` is undefined for global installs, so every hook reference is rewritten to `${HOME}`.
 
 ```bash
 cp -r ~/.claude ~/.claude.bak      # backup first
 
 cp -r /tmp/agenticsforge/.claude/. ~/.claude/
 cp    /tmp/agenticsforge/CLAUDE.md ~/.claude/CLAUDE.md
+
+# Wholesale swap: ${CLAUDE_PROJECT_DIR} → ${HOME} across every hook command in settings.json.
+sed -i.bak 's|${CLAUDE_PROJECT_DIR}|${HOME}|g' ~/.claude/settings.json
+rm -f ~/.claude/settings.json.bak
 ```
 
-> **Important — rewrite `${CLAUDE_PROJECT_DIR}` to `${HOME}` in `~/.claude/settings.json`.** The bundled `settings.json` resolves every hook path against `${CLAUDE_PROJECT_DIR}`, which is correct for project-local installs but does not exist in a global context. After copying, swap the variable:
->
-> ```bash
-> sed -i.bak 's|${CLAUDE_PROJECT_DIR}|${HOME}|g' ~/.claude/settings.json
-> ```
->
-> Hook commands then resolve to `${HOME}/.claude/hooks/...`, which is correct for global mode.
+> **Why the wholesale swap?** The bundled `settings.json` resolves every hook path against `${CLAUDE_PROJECT_DIR}`, which is correct for project-local installs but does not exist in a global context. After the `sed`, every hook command resolves to `${HOME}/.claude/hooks/...`, which is the canonical global location. Skip this step and the hooks silently no-op.
 
 **Resolution order**: Managed policy → `~/.claude/CLAUDE.md` → `./CLAUDE.md` → `./CLAUDE.local.md`. All matching files are concatenated — project rules extend global rules, they do not replace them.
 
@@ -119,22 +127,30 @@ cp    /tmp/agenticsforge/CLAUDE.md ~/.claude/CLAUDE.md
 
 ### Mode 3 — Hybrid (Recommended)
 
-Protocol core lives globally. Project-specific rules and skills live per repo. Best of both.
+Protocol core lives globally. Project-specific rules and skills live per repo. **Targeted path swap required** — `settings.json` stays project-local (so `${CLAUDE_PROJECT_DIR}` continues to resolve project artifacts correctly), but hooks live globally so the hook `command` paths are rewritten to `${HOME}/.claude/hooks/...`.
 
 ```bash
-# Step 1 — Core protocol globally
+# Step 1 — Core protocol globally (protocols, agents, rules, hooks, root CLAUDE.md)
 cp -r /tmp/agenticsforge/.claude/protocols ~/.claude/protocols
 cp -r /tmp/agenticsforge/.claude/agents    ~/.claude/agents
 cp -r /tmp/agenticsforge/.claude/rules     ~/.claude/rules
+cp -r /tmp/agenticsforge/.claude/hooks     ~/.claude/hooks
 cp    /tmp/agenticsforge/CLAUDE.md         ~/.claude/CLAUDE.md
 
-# Step 2 — Per-project extensions
+# Step 2 — Per-project extensions (skills, project-specific rules, artifacts sandbox, githooks)
 mkdir -p your-project/.claude/{skills,rules,artifacts}
 cp -r /tmp/agenticsforge/.githooks your-project/
 git -C your-project config core.hooksPath .githooks
 
+# Step 3 — Project-local settings.json with hook commands rewritten to global hooks dir
+cp /tmp/agenticsforge/.claude/settings.json your-project/.claude/settings.json
+sed -i.bak 's|${CLAUDE_PROJECT_DIR}/.claude/hooks|${HOME}/.claude/hooks|g' your-project/.claude/settings.json
+rm -f your-project/.claude/settings.json.bak
+
 # Add project-specific .claude/rules/stack.md, skills/, etc.
 ```
+
+> **Why the targeted swap?** In hybrid mode the hooks live at `~/.claude/hooks/` (global) but `settings.json` stays in the project so `${CLAUDE_PROJECT_DIR}` continues to resolve to the project root. The `sed` rewrites ONLY the hook `command` prefix — every other `${CLAUDE_PROJECT_DIR}` reference inside the hook scripts (artifact paths, template paths) keeps resolving project-locally. A wholesale Mode-2-style replacement would break artifact resolution.
 
 ---
 
