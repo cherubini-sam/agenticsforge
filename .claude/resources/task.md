@@ -66,7 +66,7 @@ Cycle close is NOT an interactive halt — it is a natural terminus. The next us
 - [ ] Phase 1: Task Breakdown (Gap Analysis)
   - [ ] [MANAGER] Initialize Task Manifest (instantiate template from `.claude/resources/task.md`).
   - [ ] [MANAGER] Verify and confirm Phase 0 gate passed.
-  - [ ] [MANAGER] `touch .claude/artifacts/.session-lock` — mark cycle in-progress so SessionStart purge is skipped during this P1→P6 run.
+  - [ ] [MANAGER] `touch .claude/artifacts/.session-lock` — belt-and-suspenders; lock is normally created automatically by `.claude/hooks/create-session-lock.sh` (PostToolUse) the moment `prompt_intake.md` is written at P0(b), so this step is a no-op in healthy sessions.
   - [ ] [ARCHITECT] Define scope and confirm loaded skills from `prompt_intake.md §Loaded Skills` (Law 37).
   - **DoD**: Task manifest is initialized, granular, and scope is locked.
 
