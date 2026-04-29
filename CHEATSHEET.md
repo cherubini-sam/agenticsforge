@@ -183,6 +183,12 @@ This is the deliverable form bundled with Agentics Forge. For a global install, 
       {
         "matcher": ".*",
         "hooks": [
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/validate-tier-json.sh", "timeout": 10000 }
+        ]
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
           { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-boot-gate.sh", "timeout": 10000 }
         ]
       },
@@ -231,6 +237,7 @@ This is the deliverable form bundled with Agentics Forge. For a global install, 
 | :------------------------------ | :----------------------------------- | :---------------------------------------------------------------------------------------------- |
 | `session-bootstrap.sh`          | SessionStart                         | Creates `.claude/artifacts/` sandbox; initialises session state                                 |
 | `validate-skills.sh`            | SessionStart                         | Validates `triggers.json` schema; warns on malformed skill entries                              |
+| `validate-tier-json.sh`         | PreToolUse — all tools (runs FIRST)  | Validates the assistant's first ```json block against the Tier 1 schema: requires `target_agent` (one of ARCHITECT/ENGINEER/VALIDATOR/LIBRARIAN/REFLECTOR/PROTOCOL/MANAGER), non-empty `reasoning`, `persona` matching `^[A-Z]{2}-SeniorPeer$`, and rejects forbidden fields (`session_shard`, `language`, `tier`, `phase`, `status`) |
 | `enforce-boot-gate.sh`          | PreToolUse — all tools               | Blocks every tool call until `.claude/artifacts/prompt_intake.md` exists                        |
 | `enforce-phase-gate.sh`         | PreToolUse — read/write/exec tools   | Blocks tool calls until `task.md` (Phase 1) and `implementation_plan.md` (Phase 3) exist        |
 | `block-destructive.sh`          | PreToolUse — Bash/Write/Edit/Agent   | Blocks `rm -rf /`, `git push --force`, writes to `main`/`master`, `--no-verify`                 |

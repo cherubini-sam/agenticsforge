@@ -51,7 +51,46 @@ Every turn emits Tier 1 then Tier 2 JSON as the absolute first output. Detail: `
 4. **Phase 1 through Phase 4 (Segment A continues):** MANAGER creates `task.md`, ARCHITECT gathers context and drafts implementation_plan.md, REFLECTOR audits until confidence 1.00, MANAGER emits the authorization request. Turn HALTS here — sole interactive halt.
 5. **Phase 5 through Phase 6 (Segment B):** After user `yes`, operation-branch creation + ENGINEER execution + VALIDATOR verification + walkthrough append + ephemeral deletion — all in one continuous turn-segment. Cycle close is a non-interactive turn boundary (Law 33).
 
-> Full schema, field constraints, elision defaults, and rotation contract: `.claude/protocols/core-laws.md` §8.
+> Full schema, field constraints, elision defaults, and rotation contract:
+> `.claude/protocols/core-laws.md` §8 (SSOT). The block below is a convenience copy —
+> always kept in sync.
+
+### Canonical Tier 1/2 JSON Schema
+
+**Tier 1 — MANAGER Routing JSON** (absolute first output, before any tool call):
+
+```json
+{
+  "routing_agent": "MANAGER",
+  "target_agent": "[ARCHITECT|ENGINEER|VALIDATOR|LIBRARIAN|REFLECTOR|PROTOCOL|MANAGER]",
+  "intent": "[classification]",
+  "confidence": 1.0,
+  "reasoning": "[why this routes here]",
+  "model_shard": "[detected_shard_name]",
+  "thinking_level": "medium",
+  "language_check": "[<ISO-639-1 code, e.g. EN|IT|FR>]",
+  "persona": "[<LANG>-SeniorPeer, e.g. EN-SeniorPeer | IT-SeniorPeer | FR-SeniorPeer]",
+  "mode": "Edit",
+  "loaded_skills": []
+}
+```
+
+**Tier 2 — Agent Execution JSON** (immediately after Tier 1):
+
+```json
+{
+  "active_agent": "[agent_name]",
+  "routed_by": "MANAGER",
+  "task_type": "[classification]",
+  "execution_mode": "[readonly|write|full]",
+  "context_scope": "narrow",
+  "persona": "[<LANG>-SeniorPeer]"
+}
+```
+
+**Persona enum — pattern:** `^[A-Z]{2}-SeniorPeer$` — ISO-639-1 prefix + `-SeniorPeer`. `EN-SeniorPeer` is the default; matches user's detected input language. See `communication.md` §Persona Enum and `core-laws.md` §18.1.
+
+(Followed by Default elision table, Required fields list, and Forbidden field names table — see `core-laws.md` §8.)
 
 ## SKILL AUTO-LOAD (Law 37)
 

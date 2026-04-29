@@ -68,6 +68,12 @@ require '^## Loaded Skills$' "## Loaded Skills"
 require '^## Warnings$' "## Warnings"
 require '^## Audit Trail$' "## Audit Trail"
 
+# Persona Lock: value must match ^[A-Z]{2}-SeniorPeer$ (e.g. EN-SeniorPeer, IT-SeniorPeer, FR-SeniorPeer)
+lang_block="$(printf '%s' "$body" | sed -n '/^## Language$/,/^## /p')"
+if ! printf '%s' "$lang_block" | grep -qE '\*\*Persona Lock\*\*: *`[A-Z]{2}-SeniorPeer`'; then
+  failures+=("Language §Persona Lock: must contain a \`<LANG>-SeniorPeer\` value (e.g. EN-SeniorPeer, IT-SeniorPeer)")
+fi
+
 # Reformulated XML tags
 require '<goal>' "Reformulated: <goal> tag"
 require '<scope>' "Reformulated: <scope> tag"

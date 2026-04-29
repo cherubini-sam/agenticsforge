@@ -7,6 +7,11 @@ set -euo pipefail
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 cd "$PROJECT_DIR"
 
+# Self-heal: ensure all hooks have execute permissions.
+# Write tool creates files without the execute bit; this idempotent guard
+# prevents any hook from silently failing due to a missing +x.
+chmod +x "$(dirname "$0")"/*.sh "$PROJECT_DIR/.claude/hooks"/*.sh 2>/dev/null || true
+
 # Resolve config directory (project-first, global fallback).
 # shellcheck source=_resolve-config-dir.sh
 source "$(dirname "$0")/_resolve-config-dir.sh"

@@ -89,7 +89,7 @@ description: "THE CONSTITUTION - Core Laws (v2: sequentially numbered, deduplica
 ```json
 {
   "routing_agent": "MANAGER",
-  "target_agent": "[ARCHITECT|ENGINEER|VALIDATOR|LIBRARIAN|REFLECTOR|PROTOCOL]",
+  "target_agent": "[ARCHITECT|ENGINEER|VALIDATOR|LIBRARIAN|REFLECTOR|PROTOCOL|MANAGER]",
   "intent": "[classification]",
   "confidence": 0.0,
   "reasoning": "[why]",
