@@ -284,6 +284,8 @@ sequenceDiagram
 | Cross-cycle audit trail          | `.claude/artifacts/walkthrough.md` — permanent, append-only                                    |
 | Multilingual session support     | `.claude/protocols/communication.md` — persona matrix                                          |
 | 3-tier sub-agent model routing   | `.claude/rules/stack.md` — Opus/Sonnet/Haiku delegation via `Agent` tool `model` param        |
+| Artifact schema enforcement      | `stamp-*.sh` + `validate-*-schema.sh` — PostToolUse hooks reject hand-authored artifacts; stampers instantiate canonical templates byte-for-exact |
+| Session cycle lock               | `create-session-lock.sh` — PostToolUse hook on P0(b) write; prevents concurrent-session artifact interference |
 
 ---
 
@@ -315,10 +317,11 @@ sequenceDiagram
 │   ├── boundaries.md
 │   ├── behavioral-enforcement.md
 │   ├── workflow-manager.md
-│   └── ...
+│   └── style.md
 │
 ├── skills/                       # Skill definitions — deterministic auto-load
 │   ├── triggers.json
+│   ├── index.json
 │   └── <skill-name>/SKILL.md
 │
 ├── resources/                    # Artifact templates — on-demand
@@ -329,14 +332,20 @@ sequenceDiagram
 ├── hooks/                        # Shell scripts referenced in settings.json
 │   ├── _resolve-config-dir.sh    # Internal helper sourced by other hooks
 │   ├── session-bootstrap.sh
+│   ├── create-session-lock.sh    # PostToolUse — writes .session-lock on P0(b) write
 │   ├── validate-skills.sh
 │   ├── enforce-boot-gate.sh
 │   ├── enforce-phase-gate.sh
 │   ├── block-destructive.sh
 │   ├── enforce-spawn-transparency.sh
+│   ├── stamp-task.sh             # Stamper — instantiates task.md from template
+│   ├── stamp-plan.sh             # Stamper — instantiates implementation_plan.md from template
+│   ├── stamp-intake.sh           # Stamper — instantiates prompt_intake.md from template
+│   ├── validate-task-schema.sh   # PostToolUse validator — rejects hand-authored task.md
+│   ├── validate-plan-schema.sh   # PostToolUse validator — rejects hand-authored implementation_plan.md
+│   ├── validate-intake-schema.sh # PostToolUse validator — rejects hand-authored prompt_intake.md
 │   ├── format-code.sh
-│   ├── verify-tests.sh
-│   └── notify-completion.sh      # Optional Stop hook (not wired by default)
+│   └── verify-tests.sh
 │
 └── artifacts/                    # Ephemeral sandbox — gitignored, never committed
     ├── prompt_intake.md          # Phase 0(b) — deleted at Phase 6
