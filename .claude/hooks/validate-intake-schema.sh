@@ -71,6 +71,8 @@ require '^## Audit Trail$' "## Audit Trail"
 # Reformulated XML tags
 require '<goal>' "Reformulated: <goal> tag"
 require '<scope>' "Reformulated: <scope> tag"
+require '<in>' "Reformulated: <in> tag (nested in scope)"
+require '<out>' "Reformulated: <out> tag (nested in scope)"
 require '<constraints>' "Reformulated: <constraints> tag"
 require '<acceptance>' "Reformulated: <acceptance> tag"
 require '<refs>' "Reformulated: <refs> tag"
