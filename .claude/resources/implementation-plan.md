@@ -14,6 +14,9 @@ ephemeral: true
 > **PHASE 3 GATE**: This artifact MUST exist and be REFLECTOR-approved (Score: 1.00) before MANAGER can route to ENGINEER.
 > If missing → MANAGER MUST route to ARCHITECT (Force Phase 3).
 
+> [!CRITICAL]
+> **VERBATIM REPRODUCTION DIRECTIVE**: This template MUST be copied byte-for-byte to `.claude/artifacts/implementation_plan.md`. Only `{{Task Name}}` and the `[ISO-8601 timestamp]` placeholders are substituted. Removing sections, renaming sections, paraphrasing CRITICAL callouts, or substituting an alternate plan shape (free-form `## Design` / `## Files Changed` headings, etc.) is a LAW-30 violation. Use `bash .claude/hooks/stamp-plan.sh "<title>"` to instantiate. Hand-authored plans are rejected at write time by `.claude/hooks/validate-plan-schema.sh` (PostToolUse).
+
 ## OBJECTIVE
 
 - **Goal**: [What is being built / changed]
