@@ -273,6 +273,7 @@ sequenceDiagram
 
 | Capability                       | Mechanism                                                                                      |
 | :------------------------------- | :--------------------------------------------------------------------------------------------- |
+| Tier 1 JSON schema enforcement   | `validate-tier-json.sh` — PreToolUse hook (runs FIRST) blocks tool calls when the assistant's first ```json block is missing, malformed, or violates the canonical Tier 1 schema (target_agent, reasoning, persona regex, forbidden fields) |
 | Protocol boot enforcement        | `enforce-boot-gate.sh` — PreToolUse hook blocks all tool calls until `prompt_intake.md` exists |
 | Phase gate enforcement           | `enforce-phase-gate.sh` — PreToolUse hook gates each phase on required artifact presence       |
 | Sub-agent spawn transparency     | `enforce-spawn-transparency.sh` — PreToolUse hook blocks `Agent`/`Task` calls missing the `sub_agent_spawn` JSON block |
@@ -331,9 +332,10 @@ sequenceDiagram
 │
 ├── hooks/                        # Shell scripts referenced in settings.json
 │   ├── _resolve-config-dir.sh    # Internal helper sourced by other hooks
-│   ├── session-bootstrap.sh
+│   ├── session-bootstrap.sh      # SessionStart — self-heals hook +x bits, purges stale artifacts
 │   ├── create-session-lock.sh    # PostToolUse — writes .session-lock on P0(b) write
 │   ├── validate-skills.sh
+│   ├── validate-tier-json.sh     # PreToolUse (FIRST) — Tier 1 JSON canonical schema gate
 │   ├── enforce-boot-gate.sh
 │   ├── enforce-phase-gate.sh
 │   ├── block-destructive.sh
