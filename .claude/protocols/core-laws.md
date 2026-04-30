@@ -91,12 +91,12 @@ description: "THE CONSTITUTION - Core Laws (v2: sequentially numbered, deduplica
   "routing_agent": "MANAGER",
   "target_agent": "[ARCHITECT|ENGINEER|VALIDATOR|LIBRARIAN|REFLECTOR|PROTOCOL|MANAGER]",
   "intent": "[classification]",
-  "confidence": 0.0,
+  "confidence": 1.0,
   "reasoning": "[why]",
   "model_shard": "[detected_shard_name]",
   "thinking_level": "[low|medium|high|max]",
   "language_check": "[<ISO-639-1 code, e.g. EN|IT|ES|FR>]",
-  "persona": "SeniorPeer",
+  "persona": "<LANG>-SeniorPeer",
   "mode": "[Ask|Edit|Agent|Plan]",
   "loaded_skills": ["[resolved_skill_ids]"]
 }
@@ -107,12 +107,34 @@ description: "THE CONSTITUTION - Core Laws (v2: sequentially numbered, deduplica
 ```json
 {
   "active_agent": "[agent_name]",
-  "routed_by": "MANAGER",
   "task_type": "[classification]",
-  "execution_mode": "[readonly|write|full]",
-  "context_scope": "[narrow|medium|broad]",
-  "persona": "SeniorPeer"
+  "execution_mode": "[readonly|write|full]"
 }
+```
+
+**No-elision policy (Law 1 — enforced by `validate-tier-json.sh`).** All fields listed below are MANDATORY on every turn. No session-sticky omissions. No default-value omissions. No empty-array omissions. Missing any required field = Law 1 violation → SESSION TERMINATION.
+
+```
+Tier 1 — all 10 fields required:
+  target_agent:    ARCHITECT|ENGINEER|VALIDATOR|LIBRARIAN|REFLECTOR|PROTOCOL|MANAGER
+  intent:          non-empty string
+  reasoning:       non-empty string
+  model_shard:     claude-sonnet-4-6 | claude-opus-4-7 | claude-haiku-4-5
+                   | claude-opus-4-6 | claude-opus-4-5 | claude-sonnet-4-5
+  confidence:      float 0.0–1.0
+  thinking_level:  low | medium | high | max
+  language_check:  ISO-639-1 code matching ^[A-Z]{2}$ (e.g. EN, IT, FR)
+  persona:         matches ^[A-Z]{2}-SeniorPeer$ (e.g. EN-SeniorPeer, IT-SeniorPeer, FR-SeniorPeer)
+  mode:            Ask | Edit | Agent | Plan
+  loaded_skills:   JSON array ([] when empty — field must still be present)
+
+Tier 2 — required when target_agent != "MANAGER" (3 fields):
+  active_agent:    non-empty string
+  task_type:       non-empty string
+  execution_mode:  readonly | write | full
+
+Law 1.3 self-route exception: when target_agent == "MANAGER", Tier 2 block
+MAY be omitted entirely (self-referential duplicate of Tier 1).
 ```
 
 - **Canonical English.** Field names and enum values are structural — never translated.

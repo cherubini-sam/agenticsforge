@@ -90,7 +90,42 @@ Every turn emits Tier 1 then Tier 2 JSON as the absolute first output. Detail: `
 
 **Persona enum — pattern:** `^[A-Z]{2}-SeniorPeer$` — ISO-639-1 prefix + `-SeniorPeer`. `EN-SeniorPeer` is the default; matches user's detected input language. See `communication.md` §Persona Enum and `core-laws.md` §18.1.
 
-(Followed by Default elision table, Required fields list, and Forbidden field names table — see `core-laws.md` §8.)
+**No-elision policy (Law 1 — all fields mandatory on every turn):**
+
+Every Tier 1 and Tier 2 field listed in the canonical schema above MUST be present on every turn with no exceptions. There are no session-sticky omissions, no default-value omissions, and no empty-list omissions. The ONLY legal omission is the entire Tier 2 block when `target_agent == "MANAGER"` (Law 1.3 self-route elision — MANAGER executing its own routing turn produces a self-referential duplicate).
+
+**Required fields — Tier 1 (all 10 — omission = Law 1 violation → SESSION TERMINATION):**
+
+| Field | Valid values |
+|:---|:---|
+| `target_agent` | `ARCHITECT` \| `ENGINEER` \| `VALIDATOR` \| `LIBRARIAN` \| `REFLECTOR` \| `PROTOCOL` \| `MANAGER` |
+| `intent` | non-empty classification string |
+| `reasoning` | non-empty explanation string |
+| `model_shard` | `claude-sonnet-4-6` \| `claude-opus-4-7` \| `claude-haiku-4-5` \| `claude-opus-4-6` \| `claude-opus-4-5` \| `claude-sonnet-4-5` |
+| `confidence` | float `0.0`–`1.0` |
+| `thinking_level` | `low` \| `medium` \| `high` \| `max` |
+| `language_check` | ISO-639-1 code matching `^[A-Z]{2}$` (e.g. `EN`, `IT`, `FR`) |
+| `persona` | matches `^[A-Z]{2}-SeniorPeer$` (e.g. `EN-SeniorPeer`, `IT-SeniorPeer`, `FR-SeniorPeer`) |
+| `mode` | `Ask` \| `Edit` \| `Agent` \| `Plan` |
+| `loaded_skills` | JSON array (use `[]` when empty — field must still be present) |
+
+**Required fields — Tier 2 (when target_agent ≠ MANAGER — omission = Law 1 violation → SESSION TERMINATION):**
+
+| Field | Valid values |
+|:---|:---|
+| `active_agent` | non-empty agent name string |
+| `task_type` | non-empty classification string |
+| `execution_mode` | `readonly` \| `write` \| `full` |
+
+**Forbidden field names (indicate model hallucination — blocked by `validate-tier-json.sh`):**
+
+| Forbidden | Correct replacement |
+|:---|:---|
+| `session_shard` | `model_shard` |
+| `language` | `language_check` |
+| `tier` | *(remove — not a Tier 1 field)* |
+| `phase` | *(remove — not a Tier 1 field)* |
+| `status` | *(remove — not a Tier 1 field)* |
 
 ## SKILL AUTO-LOAD (Law 37)
 
