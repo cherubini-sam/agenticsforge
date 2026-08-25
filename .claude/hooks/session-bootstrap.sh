@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SessionStart hook: verify canonical project layout before any agent turn runs.
-# Supports both project-local and global (~/.claude/) installation.
+# Resolves its config root via _resolve-config-dir.sh (rename-agnostic, project-local).
 # Exit 0 = proceed; Exit 1 = warn (non-blocking); Exit 2 = block session.
 set -euo pipefail
 
@@ -10,9 +10,10 @@ cd "$PROJECT_DIR"
 # Self-heal: ensure all hooks have execute permissions.
 # Write tool creates files without the execute bit; this idempotent guard
 # prevents any hook from silently failing due to a missing +x.
-chmod +x "$(dirname "$0")"/*.sh "$PROJECT_DIR/.claude/hooks"/*.sh 2>/dev/null || true
+# Scope is THIS hook directory only — never another governance tree's hooks.
+chmod +x "$(dirname "$0")"/*.sh 2>/dev/null || true
 
-# Resolve config directory (project-first, global fallback).
+# Resolve config directory (rename-agnostic two-probe, fail-closed).
 # shellcheck source=_resolve-config-dir.sh
 source "$(dirname "$0")/_resolve-config-dir.sh"
 

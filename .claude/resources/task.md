@@ -84,7 +84,7 @@ Cycle close is NOT an interactive halt — it is a natural terminus. The next us
   - [ ] [REFLECTOR] Conduct compliance audit and review Implementation Plan.
   - [ ] [ARCHITECT] Review Implementation Plan and remediate deficiencies.
   - [ ] [MANAGER] Request user authorization to proceed (output authorization request directly to user).
-  - [ ] [MANAGER] `git checkout {base}` (where `{base}` is `master` or a stacked prior operation branch) then `git checkout -b {operation}/{slug}` — create operation branch on main checkout (Law 40). HEAD now tracks `{operation}/{slug}`.
+  - [ ] [MANAGER] `git checkout {base}` (where `{base}` is `main` or a stacked prior operation branch) then `git checkout -b {operation}/{slug}` — create operation branch on main checkout (Law 40). HEAD now tracks `{operation}/{slug}`.
   - **DoD**: Plan is validated by Reflector, authorized by User, and operation branch is active on the main checkout.
 
 - [ ] Phase 5: Execution (Engineer Build)
@@ -95,9 +95,9 @@ Cycle close is NOT an interactive halt — it is a natural terminus. The next us
 
 - [ ] Phase 6: System verification (Validator Test)
   - [ ] [VALIDATOR] Execute validation and test suite.
-  - [ ] [MANAGER] `git push -u origin {operation}/{slug}` — idempotent publish of operation branch to origin (Law 40). Guarded by `block-destructive.sh` which rejects push on master/main and any `--force` push. No-op if already published and up-to-date.
+  - [ ] [MANAGER] `git push -u origin {operation}/{slug}` — idempotent publish of operation branch to origin (Law 40). Guarded by `block-destructive.sh` which rejects push while HEAD is on either protected base branch — `main` or `master` — and any `--force` push. No-op if already published and up-to-date.
   - [ ] [MANAGER] **Append** to `walkthrough.md` with header `## Cycle N — {{Task Name}}` (multi-cycle session support; never overwrite prior cycles). Record the push ref under a "Remote Publication" bullet.
-  - [ ] [MANAGER] Emit HUMAN-ONLY merge+cleanup command block in chat for `{operation}/{slug}` — fenced `bash`, `HUMAN ONLY — DO NOT RUN AS AGENT` header, commands: `git checkout master`, `git merge --no-ff {operation}/{slug} -m "chore: Merge {operation}/{slug} into master with <one-sentence summary>."`, `git branch -d {operation}/{slug}`, `git push origin --delete {operation}/{slug}`. Merge subject MUST contain ZERO parentheses, 50–500 chars, trailing period, no Claude/Anthropic attribution (Law 40 + `.githooks/commit-msg` compliance).
+  - [ ] [MANAGER] Emit HUMAN-ONLY PR-create block in chat for `{operation}/{slug}` — fenced `bash`, `HUMAN ONLY — DO NOT RUN AS AGENT` header, a single short-circuiting line: `git push -u origin {operation}/{slug} && gh pr create --base main --head {operation}/{slug} --title "chore: <one-sentence subject>." --body "<summary of cycle changes>"`. Promotion is PR-only — never a direct merge to the base branch. The title MUST contain ZERO parentheses, 50–500 chars, trailing period, no Claude/Anthropic attribution (Law 40 + `.githooks/commit-msg` compliance).
   - [ ] [MANAGER] `rm -f .claude/artifacts/.session-lock` — release cycle lock so the next session's SessionStart purge resumes.
   - [ ] [MANAGER] **HARD DELETE** `.claude/artifacts/task.md`, `.claude/artifacts/implementation_plan.md`, and `.claude/artifacts/prompt_intake.md` (TERMINAL STATE per Singleton Directive clause 4).
   - [ ] [MANAGER] Do NOT switch HEAD. Operation branch `{operation}/{slug}` is preserved on main checkout for human-only merge (Law 40).

@@ -14,7 +14,7 @@ Integrates directly with the protocol's Law 40 branch isolation model.
 - **Short-lived branches outperform long-lived ones.** Trunk-Based Development and DORA *Accelerate* both find elite teams merge to trunk multiple times per day, with branches living hours not weeks. Long-lived branches accumulate merge debt and shrink the window in which CI feedback is actionable.
 - **Pick one workflow and stay in it.** GitFlow suits versioned product releases with parallel maintenance lines. GitHub Flow / Trunk-Based suits continuously deployed services. Mixing produces the worst of both.
 - **The PR is a unit of review, not a unit of work.** ~200–400 changed lines is the empirical sweet spot for review effectiveness. Large PRs are a process smell, not a constraint to respect.
-- **Branch isolation is mechanical.** Law 40 forbids agent writes to `main`/`master`; the destructive-guard hook enforces it. Promotion to main is a human-only operation.
+- **Branch isolation is mechanical.** Law 40 forbids agent writes to either protected base branch — `main` or `master`, both guarded identically; the destructive-guard hook enforces it. Promotion to `main` is a human-only operation.
 
 ## PR Velocity
 
@@ -27,13 +27,13 @@ Integrates directly with the protocol's Law 40 branch isolation model.
 ## Branch → PR → Merge Flow
 
 ```
-git checkout master
+git checkout main
 git checkout -b {operation}/{slug}   ← Law 40 Step 0
 [commits on operation branch]
 git push -u origin {operation}/{slug}
-gh pr create ...
+gh pr create --base main --head {operation}/{slug} ...
 [review + approval]
-git checkout master && git merge --no-ff {operation}/{slug}
+[PR merged via the forge UI or gh pr merge — human-only]
 ```
 
 ## PR Creation
@@ -77,13 +77,14 @@ EOF
 
 ## Merge Strategy
 
-For this protocol system, always use `--no-ff` to preserve branch history:
+Promotion is PR-only. The protocol never emits a direct-merge chain — it emits a single-line PR-create block at Phase 6 close, targeting `main`:
 
 ```bash
-git merge --no-ff {operation}/{slug} -m "chore: Merge {operation}/{slug} into master with <summary>."
+# HUMAN ONLY — DO NOT RUN AS AGENT
+git push -u origin {operation}/{slug} && gh pr create --base main --head {operation}/{slug} --title "chore: <one-line subject with zero parentheses>." --body "<summary of cycle changes>"
 ```
 
-**HUMAN-ONLY**: Agents never execute the merge. The protocol emits this block at Phase 6 for manual execution.
+**HUMAN-ONLY**: Agents never execute this block and never merge. The PR is reviewed and merged by a human through the forge.
 
 ## Post-Merge Cleanup
 

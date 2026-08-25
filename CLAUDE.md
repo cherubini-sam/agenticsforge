@@ -3,30 +3,33 @@
 > **Status:** ACTIVE | **Runtime:** Claude Code (CLI, VS Code, JetBrains) | **Version:** 2.0.0
 
 > [!IMPORTANT]
-> **Artifact Containment (Law 5).** All mandatory workflow artifacts (`task.md`, `implementation_plan.md`, `prompt_intake.md`, `walkthrough.md`, reports, critique outputs) live EXCLUSIVELY in `.claude/artifacts/`. The directory is LOCAL-ONLY — never `git add`, never commit, never narrow the `.gitignore`. Writes on `master`/`main` are restricted to the artifact sandbox by `block-destructive.sh`.
+> **Artifact Containment (Law 5).** All mandatory workflow artifacts (`task.md`, `implementation_plan.md`, `prompt_intake.md`, `walkthrough.md`, reports, critique outputs) live EXCLUSIVELY in `.claude/artifacts/`. The directory is LOCAL-ONLY — never `git add`, never commit, never narrow the `.gitignore`. Writes on either protected base branch — `main` or `master`, both guarded identically — are restricted to the artifact sandbox by `block-destructive.sh`.
 
 > [!IMPORTANT]
-> **Destructive Guard (Law 8 + Law 40).** `rm -rf /`, `git push --force` on protected branches, `DROP TABLE`, `--no-verify`, and writes outside the artifact sandbox while on `master`/`main` are HARD-BLOCKED by `block-destructive.sh`. Operation work happens on `{op}/{slug}` branches only; promotion to `main` is a human-only operation.
+> **Destructive Guard (Law 8 + Law 40).** `rm -rf /`, `git push --force` on protected branches, `DROP TABLE`, `--no-verify`, and writes outside the artifact sandbox while on either protected base branch — `main` or `master`, both guarded identically — are HARD-BLOCKED by `block-destructive.sh`. Operation work happens on `{op}/{slug}` branches only; promotion to `main` is a human-only operation.
 
 ## MODEL DETECTION
 
 **Current (recommended) shards:**
 
-- `claude-opus-4-7` → adaptive reasoning only (no extended thinking), 1M context, Tier 1 orchestration
-- `claude-sonnet-4-6` → adaptive reasoning, 1M context, Tier 2 implementation
+- `claude-opus-5` → adaptive reasoning only (no extended thinking), 1M context, Tier 1 orchestration
+- `claude-sonnet-5` → adaptive reasoning, 1M context, Tier 2 implementation
+- `claude-fable-5` → adaptive reasoning only (no extended thinking), 1M context, Tier 1 reasoning alternative
 - `claude-haiku-4-5` → extended thinking budget-controlled, 200K context, Tier 3 exploration
 
 **Legacy shards (available, not deprecated):**
 
+- `claude-opus-4-7` → adaptive reasoning only (no extended thinking), 1M context, Tier 1
+- `claude-sonnet-4-6` → adaptive reasoning, 1M context, Tier 2
 - `claude-opus-4-6` → adaptive reasoning (extended thinking deprecated), 1M context, Tier 1
 - `claude-opus-4-5` → extended thinking budget-controlled, 200K context, Tier 1
 - `claude-sonnet-4-5` → extended thinking budget-controlled, 200K context, Tier 2
 
-**Unknown shard fallback (deterministic):** match by family → use highest current shard for that family → default `claude-sonnet-4-6`. Emit LOG WARNING on fallback trigger. Full spec: `.claude/rules/stack.md`.
+**Unknown shard fallback (deterministic):** match by family → use highest current shard for that family → default `claude-sonnet-5`. Emit LOG WARNING on fallback trigger. Full spec: `.claude/rules/stack.md`.
 
 Detected model shard is IMMUTABLE for the session once loaded.
 
-**Sub-agent model delegation:** The session shard cannot change mid-conversation. The `Agent` tool's `model` parameter (`"haiku"` | `"sonnet"` | `"opus"`) is the ONLY mechanism to use a different model within a session. MANAGER stays on the parent shard and delegates sub-tasks to cheaper or more capable models per the 3-Tier routing decision. Every `Agent` call MUST be preceded by a spawn-transparency JSON block in conversation output (Law 1 extension). Full delegation syntax, tier table, and required JSON format: `.claude/rules/stack.md` §3-Tier Model Routing Strategy.
+**Sub-agent model delegation:** The session shard cannot change mid-conversation. The `Agent` tool's `model` parameter (`"haiku"` | `"sonnet"` | `"opus"` | `"fable"`) is the ONLY mechanism to use a different model within a session. MANAGER stays on the parent shard and delegates sub-tasks to cheaper or more capable models per the 3-Tier routing decision. Every `Agent` call MUST be preceded by a spawn-transparency JSON block in conversation output (Law 1 extension). Full delegation syntax, tier table, and required JSON format: `.claude/rules/stack.md` §3-Tier Model Routing Strategy.
 
 ## CORE LAWS (SSOT: `.claude/protocols/core-laws.md`)
 
@@ -37,7 +40,7 @@ Detected model shard is IMMUTABLE for the session once loaded.
 - **Law 30 — Phase 1 Gate.** No action past Phase 1 without validated `task.md`. MANAGER reads `prompt_intake.md` before generating `task.md`.
 - **Law 33 — Single-Halt Atomicity.** Every cycle has EXACTLY ONE interactive halt: the Phase 4 authorization request. Segment A (pre-authorization) runs P0(a) + P0(b) + P1 + P2 + P3 + P4 continuously in one turn — boot validation, intake reformulation, task manifest, context retrieval, implementation plan, and REFLECTOR audit all happen before the halt. Segment B (post-authorization) runs operation-branch creation + P5 + P6 continuously in one turn after user `yes`. Cycle close is a non-interactive turn boundary. Workflow Re-entry (post-P6 user input) begins a fresh Segment A in the next turn. Mechanically enforced by `enforce-phase-gate.sh` which gates on artifact presence (prompt_intake.md, task.md, implementation_plan.md), NOT on turn count. Neither user urgency nor REFLECTOR approval alone overrides the Phase 4 halt — both are required before the authorization request.
 - **Law 39 — Violation Protocol.** Violations terminate the session. No self-correction, no recovery.
-- **Law 40 — Branch Isolation + Traceability.** Every tool call maps to a Task ID in `task.md`. Agents NEVER touch `main`/`master` tips — promotion is human-only.
+- **Law 40 — Branch Isolation + Traceability.** Every tool call maps to a Task ID in `task.md`. Agents NEVER touch either protected base-branch tip — `main` or `master`, both guarded identically — promotion is human-only.
 
 **Violation = SESSION INVALID. Emit termination marker. HALT. No further output.**
 
@@ -222,7 +225,7 @@ If you notice yourself considering any task-type carve-out, that is a signal to 
 
 - Never `git add -A` or `git add .`. Stage specific paths only.
 - Never `--no-verify` or `--no-gpg-sign` unless explicitly asked.
-- Never force-push to `main` or `master`.
+- Never force-push to either protected base branch — `main` or `master`, both guarded identically.
 - Only create commits when asked.
 
 ### Tools

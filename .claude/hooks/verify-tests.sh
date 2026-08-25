@@ -13,7 +13,10 @@ fi
 
 # Boot-gate validator — run on every PostToolUse invocation so hook/settings
 # regressions surface immediately, regardless of the touched file type.
-BOOT_VALIDATOR="${CLAUDE_PROJECT_DIR:-$(pwd)}/.claude/tests/test_boot_gate.sh"
+# Route the CONFIG-family tests lookup through the rename-agnostic resolver.
+# shellcheck source=_resolve-config-dir.sh
+source "$(dirname "$0")/_resolve-config-dir.sh"
+BOOT_VALIDATOR="${CLAUDE_CONFIG_DIR}/tests/test_boot_gate.sh"
 if [[ -x "$BOOT_VALIDATOR" ]]; then
   if ! "$BOOT_VALIDATOR" >&2; then
     echo "verify-tests: boot-gate validator FAILED" >&2

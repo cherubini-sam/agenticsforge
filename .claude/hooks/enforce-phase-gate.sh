@@ -4,8 +4,8 @@
 # Gate logic:
 #   Read|Glob:
 #     - Allow empty target (metadata probes, broad glob refreshes).
-#     - Allow reads on protocol templates (CLAUDE.md, .claude/protocols|
-#       resources|rules|skills|agents, .claude/artifacts).
+#     - Allow reads on protocol templates (CLAUDE.md, the layer config root's
+#       protocols|resources|rules|skills|agents|tests, and .claude/artifacts).
 #     - Otherwise require .claude/artifacts/task.md (Phase 1 gate).
 #   Grep|Bash|Agent|Task|WebSearch|WebFetch:
 #     - Require .claude/artifacts/task.md (Phase 1 gate).
@@ -18,6 +18,13 @@ set -euo pipefail
 
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 cd "$PROJECT_DIR"
+
+# Resolve the config root so the CONFIG allow-arms below match the layer under
+# whichever directory name it currently carries. CONFIG_REL is the basename,
+# because the incoming tool targets are matched as repo-relative case patterns.
+# shellcheck source=_resolve-config-dir.sh
+source "$(dirname "$0")/_resolve-config-dir.sh"
+CONFIG_REL="$(basename "$CLAUDE_CONFIG_DIR")"
 
 payload="$(cat || true)"
 if [[ -z "$payload" ]]; then
@@ -47,11 +54,12 @@ case "$tool" in
       "") exit 0 ;;
       .claude/artifacts/*|*/.claude/artifacts/*) exit 0 ;;
       CLAUDE.md|*/CLAUDE.md) exit 0 ;;
-      .claude/protocols/*|*/.claude/protocols/*) exit 0 ;;
-      .claude/resources/*|*/.claude/resources/*) exit 0 ;;
-      .claude/rules/*|*/.claude/rules/*) exit 0 ;;
-      .claude/skills/*|*/.claude/skills/*) exit 0 ;;
-      .claude/agents/*|*/.claude/agents/*) exit 0 ;;
+      "$CONFIG_REL"/protocols/*|*/"$CONFIG_REL"/protocols/*) exit 0 ;;
+      "$CONFIG_REL"/resources/*|*/"$CONFIG_REL"/resources/*) exit 0 ;;
+      "$CONFIG_REL"/rules/*|*/"$CONFIG_REL"/rules/*) exit 0 ;;
+      "$CONFIG_REL"/skills/*|*/"$CONFIG_REL"/skills/*) exit 0 ;;
+      "$CONFIG_REL"/agents/*|*/"$CONFIG_REL"/agents/*) exit 0 ;;
+      "$CONFIG_REL"/tests/*|*/"$CONFIG_REL"/tests/*) exit 0 ;;
     esac
     if [[ ! -f ".claude/artifacts/task.md" ]]; then
       echo "enforce-phase-gate: BLOCKED — Read/Glob on non-sandbox path requires .claude/artifacts/task.md (Phase 1 gate)." >&2

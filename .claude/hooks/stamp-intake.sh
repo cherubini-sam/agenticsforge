@@ -2,7 +2,7 @@
 # Canonical instantiator for the project-local prompt_intake.md artifact.
 #
 # Reads the canonical template from the GLOBAL config:
-#   ${CLAUDE_PROJECT_DIR}/.claude/resources/prompt-intake.md
+#   ${CLAUDE_CONFIG_DIR}/resources/prompt-intake.md  (layer config root)
 # and writes the stamped artifact to the PROJECT-LOCAL sandbox:
 #   ${CLAUDE_PROJECT_DIR}/.claude/artifacts/prompt_intake.md
 #
@@ -14,7 +14,7 @@
 # in place — they are filled by PROTOCOL during the Phase 0 (b) inference step.
 #
 # Usage:
-#   CLAUDE_PROJECT_DIR=/abs/path/to/project bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/stamp-intake.sh "<session-slug>"
+#   CLAUDE_PROJECT_DIR=/abs/path/to/project bash <layer-config-root>/hooks/stamp-intake.sh "<session-slug>"
 #
 # Exit codes: 0 = ok, 1 = misuse / template missing / CLAUDE_PROJECT_DIR unset.
 set -euo pipefail
@@ -26,12 +26,14 @@ if [[ -z "${CLAUDE_PROJECT_DIR:-}" ]]; then
 fi
 
 if [[ $# -lt 1 || -z "${1:-}" ]]; then
-  echo "stamp-intake: USAGE — bash \${CLAUDE_PROJECT_DIR}/.claude/hooks/stamp-intake.sh \"<session-slug>\"" >&2
+  echo "stamp-intake: USAGE — bash \${CLAUDE_CONFIG_DIR}/hooks/stamp-intake.sh \"<session-slug>\"" >&2
   exit 1
 fi
 
 SLUG="$1"
-SRC="${CLAUDE_PROJECT_DIR}/.claude/resources/prompt-intake.md"
+# Route the CONFIG-family template lookup through the rename-agnostic resolver.
+source "$(dirname "$0")/_resolve-config-dir.sh"
+SRC="${CLAUDE_CONFIG_DIR}/resources/prompt-intake.md"
 DST="${CLAUDE_PROJECT_DIR}/.claude/artifacts/prompt_intake.md"
 
 [[ -f "$SRC" ]] || { echo "stamp-intake: ERROR — canonical template missing: $SRC" >&2; exit 1; }
