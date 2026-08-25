@@ -11,7 +11,7 @@
 #       model_param:    "opus" | "sonnet" | "haiku" | "inherit"
 #       resolved_shard: string (concrete model ID)
 #       task_ref:       string (Task ID from task.md, or "—")
-#   - Spec: .claude/rules/stack.md §Sub-Agent Spawn Transparency
+#   - Spec: <layer-config-root>/rules/stack.md §Sub-Agent Spawn Transparency
 #   - Fail-closed on empty payload, malformed JSON, missing transcript,
 #     missing/invalid spawn block. No exemptions.
 #
@@ -166,6 +166,6 @@ Required format (place in a fenced \`\`\`json block in your message BEFORE the A
   "task_ref": "<Task ID from task.md, or '—'>"
 }
 
-Spec: .claude/rules/stack.md §Sub-Agent Spawn Transparency
+Spec: <layer-config-root>/rules/stack.md §Sub-Agent Spawn Transparency
 EOF
 exit 2

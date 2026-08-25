@@ -52,7 +52,7 @@ Phase-based execution creates natural recovery points:
 - **MANAGER** enforces sequential execution. Parallel `Agent` calls that would mutate HEAD are FORBIDDEN.
 - **REFLECTOR** audits plans for implicit concurrency assumptions (e.g., "parallel sub-agents refactor modules X and Y") and REJECTS them.
 - **VALIDATOR** reviews branch diffs before signalling Phase 6 PASS.
-- **No agent** may promote `{operation}/{slug}` to `master`/`main` — human-only operation.
+- **No agent** may promote `{operation}/{slug}` to either protected base branch — `main` or `master`, both guarded identically — human-only operation.
 
 ### CONCURRENCY AUDIT
 

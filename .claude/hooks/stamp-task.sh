@@ -2,7 +2,7 @@
 # Canonical instantiator for the project-local task.md artifact.
 #
 # Reads the canonical template from the GLOBAL config:
-#   ${CLAUDE_PROJECT_DIR}/.claude/resources/task.md
+#   ${CLAUDE_CONFIG_DIR}/resources/task.md  (layer config root)
 # and writes the stamped artifact to the PROJECT-LOCAL sandbox:
 #   ${CLAUDE_PROJECT_DIR}/.claude/artifacts/task.md
 #
@@ -11,7 +11,7 @@
 #   - "[ISO-8601]"     -> a real ISO-8601 UTC timestamp
 #
 # Usage:
-#   CLAUDE_PROJECT_DIR=/abs/path/to/project bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/stamp-task.sh "<task title>"
+#   CLAUDE_PROJECT_DIR=/abs/path/to/project bash <layer-config-root>/hooks/stamp-task.sh "<task title>"
 #
 # Exit codes: 0 = ok, 1 = misuse / template missing / CLAUDE_PROJECT_DIR unset.
 set -euo pipefail
@@ -23,12 +23,14 @@ if [[ -z "${CLAUDE_PROJECT_DIR:-}" ]]; then
 fi
 
 if [[ $# -lt 1 || -z "${1:-}" ]]; then
-  echo "stamp-task: USAGE — bash \${CLAUDE_PROJECT_DIR}/.claude/hooks/stamp-task.sh \"<task title>\"" >&2
+  echo "stamp-task: USAGE — bash \${CLAUDE_CONFIG_DIR}/hooks/stamp-task.sh \"<task title>\"" >&2
   exit 1
 fi
 
 TITLE="$1"
-SRC="${CLAUDE_PROJECT_DIR}/.claude/resources/task.md"
+# Route the CONFIG-family template lookup through the rename-agnostic resolver.
+source "$(dirname "$0")/_resolve-config-dir.sh"
+SRC="${CLAUDE_CONFIG_DIR}/resources/task.md"
 DST="${CLAUDE_PROJECT_DIR}/.claude/artifacts/task.md"
 
 [[ -f "$SRC" ]] || { echo "stamp-task: ERROR — canonical template missing: $SRC" >&2; exit 1; }

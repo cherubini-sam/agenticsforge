@@ -8,9 +8,10 @@
 #   - Fast path: once prompt_intake.md exists, exit 0 unconditionally.
 #     Downstream Phase 1/3 enforcement is delegated to enforce-phase-gate.sh
 #     and block-destructive.sh. Do NOT duplicate that logic here.
-#   - Resolution order for .claude/protocols/ follows CLAUDE.md §GLOBAL
-#     INSTALLATION: project-local first, ${HOME}/.claude/ fallback. The
-#     artifact sandbox remains project-local-only.
+#   - The config root is resolved project-locally by _resolve-config-dir.sh,
+#     which probes the canonical and interim layer names in order and fails
+#     closed. There is no global fallback. The artifact sandbox is always
+#     project-local and is resolved separately from the config root.
 #   - Fail closed on empty payload, malformed JSON, missing project layout,
 #     or any case-match miss.
 #
@@ -20,11 +21,15 @@ set -euo pipefail
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 cd "$PROJECT_DIR"
 
-# Project sanity — resolve protocols/ in the documented order.
-if [[ ! -d ".claude/protocols" && ! -d "${HOME}/.claude/protocols" ]]; then
-  echo "enforce-boot-gate: BLOCKED — no .claude/protocols/ resolvable (project-local or \${HOME}/.claude/)." >&2
+# Project sanity — resolve the config root project-locally, under either the
+# canonical or the interim layer name. No global fallback: a gate that resolves
+# to a global mirror would enforce against a tree it does not govern.
+# shellcheck source=_resolve-config-dir.sh
+if ! source "$(dirname "$0")/_resolve-config-dir.sh"; then
+  echo "enforce-boot-gate: BLOCKED — no project-local governance config root resolvable." >&2
   exit 2
 fi
+CONFIG_REL="$(basename "$CLAUDE_CONFIG_DIR")"
 
 payload="$(cat || true)"
 if [[ -z "$payload" ]]; then
@@ -57,11 +62,13 @@ case "$tool" in
   Read|Glob)
     case "$target" in
       CLAUDE.md|*/CLAUDE.md) exit 0 ;;
-      .claude/protocols/*|*/.claude/protocols/*) exit 0 ;;
-      .claude/resources/*|*/.claude/resources/*) exit 0 ;;
-      .claude/rules/*|*/.claude/rules/*) exit 0 ;;
-      .claude/skills/*|*/.claude/skills/*) exit 0 ;;
-      .claude/agents/*|*/.claude/agents/*) exit 0 ;;
+      CLAUDE_agentics_forge_boot.md|*/CLAUDE_agentics_forge_boot.md) exit 0 ;;
+      "$CONFIG_REL"/protocols/*|*/"$CONFIG_REL"/protocols/*) exit 0 ;;
+      "$CONFIG_REL"/resources/*|*/"$CONFIG_REL"/resources/*) exit 0 ;;
+      "$CONFIG_REL"/rules/*|*/"$CONFIG_REL"/rules/*) exit 0 ;;
+      "$CONFIG_REL"/skills/*|*/"$CONFIG_REL"/skills/*) exit 0 ;;
+      "$CONFIG_REL"/agents/*|*/"$CONFIG_REL"/agents/*) exit 0 ;;
+      "$CONFIG_REL"/tests/*|*/"$CONFIG_REL"/tests/*) exit 0 ;;
     esac
     ;;
   Write)

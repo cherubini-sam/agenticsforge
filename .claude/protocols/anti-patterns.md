@@ -73,7 +73,7 @@ description: "Common anti-patterns, guards, and recovery protocols."
 3. **Phase 6 cleanup is MANDATORY** — `task.md` and `implementation_plan.md` are hard-deleted at the close of Phase 6. Only `walkthrough.md` persists across cycles (append-only).
 4. **Read-only outside the sandbox** — agents MAY read any project file, but MAY NOT write outside the sandbox except through the explicit Phase 5 execution flow on an approved operation branch.
 
-**Enforcement:** `block-destructive.sh` denies `Write`/`Edit` tool calls whose target path is not in `.claude/artifacts/` when the current branch is `master`/`main` (Law 5 + Law 40).
+**Enforcement:** `block-destructive.sh` denies `Write`/`Edit` tool calls whose target path is not in `.claude/artifacts/` when the current branch is either protected base branch — `main` or `master`, both guarded identically (Law 5 + Law 40).
 
 #### 6. TOKEN ANTI-PATTERNS
 

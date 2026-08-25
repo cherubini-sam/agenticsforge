@@ -95,10 +95,10 @@ fi
 if (( ${#failures[@]} > 0 )); then
   {
     echo "validate-task-schema: BLOCKED — $ARTIFACT does not match canonical schema."
-    echo "validate-task-schema: canonical = ${CLAUDE_PROJECT_DIR}/.claude/resources/task.md"
+    echo "validate-task-schema: canonical = <layer-config-root>/resources/task.md"
     echo "validate-task-schema: failures (${#failures[@]}):"
     for f in "${failures[@]}"; do echo "  - $f"; done
-    echo "validate-task-schema: hint — instantiate via 'bash \${CLAUDE_PROJECT_DIR}/.claude/hooks/stamp-task.sh \"<title>\"'"
+    echo "validate-task-schema: hint — instantiate via 'bash \${CLAUDE_CONFIG_DIR}/hooks/stamp-task.sh \"<title>\"'"
   } >&2
   exit 2
 fi

@@ -13,8 +13,9 @@ Model is detected per session via `CLAUDE.md` and loaded as an immutable shard.
 | Shard | Model ID | Context In | Max Out | Reasoning | Default Effort | Pricing (Input/Output per MTok) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `claude-haiku-4-5` | `claude-haiku-4-5-20251001` | 200K | 64K | Extended — budget-controlled (4K–16K budget_tokens) | Disabled | $1.00 / $5.00 |
-| `claude-sonnet-4-6` | `claude-sonnet-4-6` | 1M | 64K | Adaptive (low/medium/high/max); interleaved automatic | `medium` | $3.00 / $15.00 |
-| `claude-opus-4-7` | `claude-opus-4-7` | 1M | 128K | Adaptive only (low/medium/high/xhigh/max); extended thinking not supported | `high` | $5.00 / $25.00 |
+| `claude-sonnet-5` | `claude-sonnet-5` | 1M | 128K | Adaptive (low/medium/high/max); interleaved automatic | `medium` | $3.00 / $15.00 |
+| `claude-opus-5` | `claude-opus-5` | 1M | 128K | Adaptive only (low/medium/high/xhigh/max); extended thinking not supported | `high` | $5.00 / $25.00 |
+| `claude-fable-5` | `claude-fable-5` | 1M | 128K | Adaptive only (low/medium/high/xhigh/max); extended thinking not supported | `high` | $10.00 / $50.00 |
 
 #### LLM Runtime — Legacy Models (Available, Not Deprecated)
 
@@ -23,6 +24,8 @@ Model is detected per session via `CLAUDE.md` and loaded as an immutable shard.
 | `claude-sonnet-4-5` | `claude-sonnet-4-5-20250929` | 200K | 64K | Extended — budget-controlled | Disabled | $3.00 / $15.00 |
 | `claude-opus-4-5` | `claude-opus-4-5-20251101` | 200K | 64K | Extended — budget-controlled | Disabled | $5.00 / $25.00 |
 | `claude-opus-4-6` | `claude-opus-4-6` | 1M | 128K | Adaptive (extended thinking deprecated — migrate to adaptive) | `high` | $5.00 / $25.00 |
+| `claude-sonnet-4-6` | `claude-sonnet-4-6` | 1M | 64K | Adaptive (low/medium/high/max); interleaved automatic | `medium` | $3.00 / $15.00 |
+| `claude-opus-4-7` | `claude-opus-4-7` | 1M | 128K | Adaptive only (low/medium/high/xhigh/max); extended thinking not supported | `high` | $5.00 / $25.00 |
 
 Non-existent versions (do not request): `claude-haiku-4-6`, `claude-haiku-4-7`, `claude-sonnet-4-7`.
 
@@ -32,16 +35,17 @@ Cache minimum: 1024 tokens. Cached input: ~90% discount (5-min or 1-hr TTL). Bat
 
 When the running model ID is not found in the tables above, apply this deterministic chain (no LLM-based matching):
 
-1. Parse the model family from the ID prefix: `haiku` | `sonnet` | `opus`.
+1. Parse the model family from the ID prefix: `haiku` | `sonnet` | `opus` | `fable`.
 2. Select the highest available **current** shard for that family.
-3. If the family cannot be identified, default to `claude-sonnet-4-6`.
+3. If the family cannot be identified, default to `claude-sonnet-5`.
 
 | Unknown Shard Family | Fallback Shard |
 | :--- | :--- |
 | Any unrecognized Haiku version | `claude-haiku-4-5` |
-| Any unrecognized Sonnet version | `claude-sonnet-4-6` |
-| Any unrecognized Opus version | `claude-opus-4-7` |
-| Unknown family | `claude-sonnet-4-6` |
+| Any unrecognized Sonnet version | `claude-sonnet-5` |
+| Any unrecognized Opus version | `claude-opus-5` |
+| Any unrecognized Fable version | `claude-fable-5` |
+| Unknown family | `claude-sonnet-5` |
 
 Emit `LOG WARNING` when fallback resolution is triggered.
 
@@ -51,8 +55,9 @@ Emit `LOG WARNING` when fallback resolution is triggered.
 
 | Tier | Model | `Agent` tool `model` param | Use Case | Trigger |
 | :--- | :--- | :--- | :--- | :--- |
-| Tier 1 | Claude Opus 4.7 | `"opus"` | Architecture, security audits, complex orchestration, production code review | MANAGER routes `system_design`, `security_audit`, `complex_reasoning` |
-| Tier 2 | Claude Sonnet 4.6 | `"sonnet"` | Standard implementation, debugging, unit tests, bulk engineering | MANAGER routes `implementation`, `refactor`, `bug_fix`, `test_generation` |
+| Tier 1 | Claude Opus 5 | `"opus"` | Architecture, security audits, complex orchestration, production code review | MANAGER routes `system_design`, `security_audit`, `complex_reasoning` |
+| Tier 1 | Claude Fable 5 | `"fable"` | Top-tier reasoning alternative to Opus 5 for design, audit, and adversarial analysis | MANAGER routes `system_design`, `security_audit`, `complex_reasoning` |
+| Tier 2 | Claude Sonnet 5 | `"sonnet"` | Standard implementation, debugging, unit tests, bulk engineering | MANAGER routes `implementation`, `refactor`, `bug_fix`, `test_generation` |
 | Tier 3 | Claude Haiku 4.5 | `"haiku"` | Fast read-only tasks: codebase search, doc generation, SEO, exploration | MANAGER routes `exploration`, `documentation`, `analysis` |
 
 **Routing rule:** Expensive models plan and orchestrate; efficient models execute in parallel.
@@ -71,6 +76,9 @@ Agent(subagent_type="engineer", model="sonnet", prompt="...")
 # Tier 3 — read-only exploration
 Agent(subagent_type="Explore", model="haiku", prompt="...")
 
+# Tier 1 — top-tier reasoning task (Fable family)
+Agent(subagent_type="architect", model="fable", prompt="...")
+
 # Inherit parent shard (omit model param) — tier reflects parent's tier
 Agent(subagent_type="engineer", prompt="...")
 ```
@@ -87,7 +95,7 @@ Every `Agent` tool call MUST be preceded by a spawn-transparency JSON block in c
   "tier": 2,
   "subagent_type": "engineer",
   "model_param": "sonnet",
-  "resolved_shard": "claude-sonnet-4-6",
+  "resolved_shard": "claude-sonnet-5",
   "task_ref": "T-005"
 }
 ```
@@ -99,7 +107,7 @@ Every `Agent` tool call MUST be preceded by a spawn-transparency JSON block in c
 | `event` | string | Always `"sub_agent_spawn"` |
 | `tier` | integer | `1` \| `2` \| `3` |
 | `subagent_type` | string | Matches the `subagent_type` passed to `Agent` |
-| `model_param` | string | `"opus"` \| `"sonnet"` \| `"haiku"` \| `"inherit"` (use `"inherit"` when param omitted) |
+| `model_param` | string | `"opus"` \| `"sonnet"` \| `"haiku"` \| `"fable"` \| `"inherit"` (use `"inherit"` when param omitted) |
 | `resolved_shard` | string | The concrete model ID that will execute (apply Shard Fallback Resolution if needed) |
 | `task_ref` | string | Task ID from `task.md`; use `"—"` when outside a formal task cycle |
 
@@ -112,7 +120,7 @@ Omitting this block before an `Agent` call = Law 1 violation → SESSION TERMINA
 | Threshold | Action |
 | :--- | :--- |
 | Single request > 50K tokens | LOG WARNING |
-| Session total > 500K tokens | STOP + REQUEST CHECKPOINT |
+| Session total > 500K tokens | LOG WARNING; autonomous proceed |
 
 Bypass: manual user override for large-scale codebase migrations.
 

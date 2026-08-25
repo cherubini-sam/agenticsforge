@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # PostToolUse hook: validate .claude/artifacts/implementation_plan.md against
-# the canonical schema at .claude/resources/implementation-plan.md.
+# the canonical schema at <layer-config-root>/resources/implementation-plan.md.
 #
 # Validation rules (all must pass):
 #   1. Frontmatter: description, owner=ARCHITECT, target_path, ephemeral=true.
@@ -77,10 +77,10 @@ require '\*\*Confidence Score\*\*' "REFLECTOR APPROVAL: **Confidence Score** fie
 if (( ${#failures[@]} > 0 )); then
   {
     echo "validate-plan-schema: BLOCKED — $ARTIFACT does not match canonical schema."
-    echo "validate-plan-schema: canonical = ${CLAUDE_PROJECT_DIR}/.claude/resources/implementation-plan.md"
+    echo "validate-plan-schema: canonical = <layer-config-root>/resources/implementation-plan.md"
     echo "validate-plan-schema: failures (${#failures[@]}):"
     for f in "${failures[@]}"; do echo "  - $f"; done
-    echo "validate-plan-schema: hint — instantiate via 'bash \${CLAUDE_PROJECT_DIR}/.claude/hooks/stamp-plan.sh \"<title>\"'"
+    echo "validate-plan-schema: hint — instantiate via 'bash \${CLAUDE_CONFIG_DIR}/hooks/stamp-plan.sh \"<title>\"'"
   } >&2
   exit 2
 fi

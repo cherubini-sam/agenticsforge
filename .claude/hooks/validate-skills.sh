@@ -7,7 +7,8 @@ set -euo pipefail
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 cd "$PROJECT_DIR"
 
-# Resolve config directory (project-first, global fallback).
+# Resolve the config root project-locally under either the canonical or the
+# interim layer name; fails closed with no global fallback.
 # shellcheck source=_resolve-config-dir.sh
 source "$(dirname "$0")/_resolve-config-dir.sh"
 
@@ -36,9 +37,10 @@ done < <(find "$SKILL_ROOT" -type f -name "SKILL.md" -print0 2>/dev/null)
 
 # index.json integrity.
 if [[ -f "$INDEX" ]]; then
-  if ! /usr/bin/python3 - "$INDEX" <<'PY'
-import json, sys
+  if ! /usr/bin/python3 - "$INDEX" "$CLAUDE_CONFIG_DIR" <<'PY'
+import json, os, sys
 path = sys.argv[1]
+config_dir = sys.argv[2]
 try:
     with open(path) as fh:
         data = json.load(fh)
@@ -59,6 +61,18 @@ for entry in skills:
     for field in ("id", "description"):
         if not entry.get(field):
             print(f"validate-skills: empty '{field}' in entry {entry.get('id','<no-id>')}", file=sys.stderr)
+            bad += 1
+    # Path values are stored tree-relative to the config root and joined
+    # against the resolved root, so they stay correct under either directory
+    # name. An absolute value is honored as-is for backward compatibility.
+    rel = entry.get("path")
+    if not rel:
+        print(f"validate-skills: empty 'path' in entry {entry.get('id','<no-id>')}", file=sys.stderr)
+        bad += 1
+    else:
+        resolved = rel if os.path.isabs(rel) else os.path.join(config_dir, rel)
+        if not os.path.isfile(resolved):
+            print(f"validate-skills: unresolvable 'path' in entry {entry.get('id','<no-id>')} -> {resolved}", file=sys.stderr)
             bad += 1
 sys.exit(2 if bad else 0)
 PY

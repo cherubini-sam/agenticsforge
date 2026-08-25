@@ -57,7 +57,9 @@ except Exception:
       fi
     done
 
-    # Branch-isolation guard (Law 40): refuse writes on master/main.
+    # Branch-isolation guard (Law 40): both protected base-branch names are
+    # guarded — a branch named "main" and a branch named "master" are treated
+    # identically here, so the guard holds whichever name the repo adopts.
     if printf '%s' "$cmd" | grep -Eq '^\s*git[[:space:]]+(commit|merge|push)'; then
       branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")"
       if [[ "$branch" == "master" || "$branch" == "main" ]]; then
@@ -82,7 +84,8 @@ except Exception:
       exit 0
     fi
 
-    # On master/main branch: writes restricted to .claude/artifacts/ (Law 5 + Law 40).
+    # On either protected base branch — "main" or "master", both guarded
+    # identically — writes are restricted to .claude/artifacts/ (Law 5 + Law 40).
     branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")"
     if [[ "$branch" == "master" || "$branch" == "main" ]]; then
       case "$target" in

@@ -11,7 +11,7 @@
 #   4. model_shard present and one of the canonical shard set.
 #   5. intent present and non-empty string.
 #   6. confidence present and float in [0.0, 1.0].
-#   7. thinking_level present and one of: low|medium|high|max.
+#   7. thinking_level present and one of: low|medium|high|xhigh|max.
 #   8. language_check present and matches ^[A-Z]{2}$ (ISO-639-1 code).
 #   9. persona present and matches ^[A-Z]{2}-SeniorPeer$.
 #  10. mode present and one of: Ask|Edit|Agent|Plan.
@@ -82,10 +82,13 @@ except Exception as e:
 VALID_AGENTS = {"ARCHITECT", "ENGINEER", "VALIDATOR", "LIBRARIAN", "REFLECTOR", "PROTOCOL", "MANAGER"}
 PERSONA_RE = re.compile(r"^[A-Z]{2}-SeniorPeer$")
 LANGUAGE_RE = re.compile(r"^[A-Z]{2}$")
-VALID_THINKING = {"low", "medium", "high", "max"}
+VALID_THINKING = {"low", "medium", "high", "xhigh", "max"}
 VALID_MODES = {"Ask", "Edit", "Agent", "Plan"}
 VALID_EXECUTION_MODES = {"readonly", "write", "full"}
 VALID_SHARDS = {
+    "claude-opus-5",
+    "claude-sonnet-5",
+    "claude-fable-5",
     "claude-sonnet-4-6",
     "claude-opus-4-7",
     "claude-haiku-4-5",

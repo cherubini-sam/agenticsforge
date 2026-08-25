@@ -131,7 +131,7 @@ cd /path/to/your-project
 claude
 ```
 
-Turn 0 should output Tier 1 + Tier 2 JSON as the **first output**. The `target_agent: "PROTOCOL"` line confirms the boot protocol loaded correctly.
+Turn 0 should output Tier 1 + Tier 2 JSON as the **first output**. The `target_agent: "PROTOCOL"` line confirms the boot protocol loaded correctly. The `model_shard` field should reflect a current model: `claude-opus-5`, `claude-sonnet-5`, `claude-haiku-4-5`, or `claude-fable-5`.
 
 ---
 

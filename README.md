@@ -167,7 +167,7 @@ On Turn 0 you should see Tier 1 + Tier 2 JSON as the **first output** — that c
 {
   "target_agent": "PROTOCOL",
   "intent": "boot_validation",
-  "model_shard": "claude-sonnet-4-6",
+  "model_shard": "claude-sonnet-5",
   ...
 }
 ```
@@ -328,7 +328,8 @@ sequenceDiagram
 ├── resources/                    # Artifact templates — on-demand
 │   ├── task.md
 │   ├── prompt-intake.md
-│   └── implementation-plan.md
+│   ├── implementation-plan.md
+│   └── walkthrough.md
 │
 ├── hooks/                        # Shell scripts referenced in settings.json
 │   ├── _resolve-config-dir.sh    # Internal helper sourced by other hooks

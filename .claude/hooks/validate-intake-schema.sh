@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # PostToolUse hook: validate .claude/artifacts/prompt_intake.md against the
-# canonical schema at .claude/resources/prompt-intake.md.
+# canonical schema at <layer-config-root>/resources/prompt-intake.md.
 #
 # Validation rules (all must pass):
 #   1. Frontmatter: description, owner=PROTOCOL, target_path, ephemeral=true.
@@ -93,10 +93,10 @@ fi
 if (( ${#failures[@]} > 0 )); then
   {
     echo "validate-intake-schema: BLOCKED — $ARTIFACT does not match canonical schema."
-    echo "validate-intake-schema: canonical = ${CLAUDE_PROJECT_DIR}/.claude/resources/prompt-intake.md"
+    echo "validate-intake-schema: canonical = <layer-config-root>/resources/prompt-intake.md"
     echo "validate-intake-schema: failures (${#failures[@]}):"
     for f in "${failures[@]}"; do echo "  - $f"; done
-    echo "validate-intake-schema: hint — instantiate via 'bash \${CLAUDE_PROJECT_DIR}/.claude/hooks/stamp-intake.sh \"<slug>\"'"
+    echo "validate-intake-schema: hint — instantiate via 'bash \${CLAUDE_CONFIG_DIR}/hooks/stamp-intake.sh \"<slug>\"'"
   } >&2
   exit 2
 fi
