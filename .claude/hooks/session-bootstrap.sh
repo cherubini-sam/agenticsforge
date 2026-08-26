@@ -17,9 +17,9 @@ chmod +x "$(dirname "$0")"/*.sh 2>/dev/null || true
 # shellcheck source=_resolve-config-dir.sh
 source "$(dirname "$0")/_resolve-config-dir.sh"
 
-# CLAUDE.md must exist at project root OR at ~/.claude/CLAUDE.md.
-if [[ ! -f "$PROJECT_DIR/CLAUDE.md" && ! -f "$HOME/.claude/CLAUDE.md" ]]; then
-  echo "session-bootstrap: MISSING CLAUDE.md (checked $PROJECT_DIR and $HOME/.claude/)" >&2
+# CLAUDE.md must exist at project root.
+if [[ ! -f "$PROJECT_DIR/CLAUDE.md" ]]; then
+  echo "session-bootstrap: MISSING CLAUDE.md (checked $PROJECT_DIR)" >&2
   exit 2
 fi
 
