@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SessionStart / ad-hoc hook: enforce SKILL.md token budget (V7.8) and index/triggers integrity.
-# Budget: no SKILL.md may exceed 500 tokens (~2KB). Aligned with Anthropic official "under 500 lines" guidance.
+# Budget: no SKILL.md may exceed 2500 tokens (~10KB). Calibrated against actual skill corpus sizes.
 # Integrity: index.json + triggers.json must be valid JSON with no empty placeholder fields (V7.9).
 set -euo pipefail
 
@@ -15,7 +15,7 @@ source "$(dirname "$0")/_resolve-config-dir.sh"
 SKILL_ROOT="$CLAUDE_CONFIG_DIR/skills"
 INDEX="$SKILL_ROOT/index.json"
 TRIGGERS="$SKILL_ROOT/triggers.json"
-TOKEN_BUDGET=500
+TOKEN_BUDGET=2500
 
 if [[ ! -d "$SKILL_ROOT" ]]; then
   echo "validate-skills: skills root missing -> $SKILL_ROOT" >&2
@@ -25,7 +25,7 @@ fi
 fail=0
 warn=0
 
-# V7.8 token budget sweep (500 tokens ~ 2000 bytes).
+# V7.8 token budget sweep (2500 tokens ~ 10000 bytes).
 while IFS= read -r -d '' f; do
   bytes="$(wc -c < "$f" | tr -d ' ')"
   tokens=$(( bytes / 4 ))

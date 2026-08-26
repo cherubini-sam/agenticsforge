@@ -13,6 +13,9 @@
 #                                    bogus-shard payload is BLOCKED. BOTH directions.
 #   SYN  Syntax floor             — bash -n over every .sh in the tree.
 #   SMK  Smoke harness            — every wired hook executes (delegates to smoke_hooks.sh).
+#   EXT  Extended unit tests      — standalone per-hook test harnesses:
+#          test_boot_gate.sh       (enforce-boot-gate.sh + enforce-phase-gate.sh Read/Glob arm)
+#          test_spawn_transparency.sh  (enforce-spawn-transparency.sh, 16 cases V1–V6 + I1–I10)
 #
 # Properties this file guarantees:
 #   (a) exits 0 only on total success; on any failure exits non-zero and prints a
@@ -96,7 +99,7 @@ done
 echo
 echo "[V-1] Layer is LIVE — every settings.json command resolves to an existing file"
 V1_OUT="$(/usr/bin/python3 - "$SETTINGS" "$PROJECT_DIR" <<'PY'
-import json, os, sys
+import json, os, re, sys
 settings_path, project_dir = sys.argv[1], sys.argv[2]
 try:
     with open(settings_path) as fh:
@@ -111,10 +114,19 @@ commands = [
     for hook in (group.get("hooks") or [])
     if hook.get("command")
 ]
-missing = [
-    c for c in commands
-    if not os.path.isfile(c.replace("${CLAUDE_PROJECT_DIR}", project_dir))
-]
+def resolves(c, project_dir):
+    # Bare path: ${CLAUDE_PROJECT_DIR}/... substitution
+    bare = c.replace("${CLAUDE_PROJECT_DIR}", project_dir)
+    if os.path.isfile(bare):
+        return True
+    # bash -c wrapper: last argument is the hook basename; resolver must exist
+    m = re.search(r"_resolve-hook\.sh.*?'\s+_\s+(\S+\.sh)", c)
+    if m:
+        resolver = os.path.join(project_dir, ".claude", "hooks", "_resolve-hook.sh")
+        hook_file = os.path.join(project_dir, ".claude", "hooks", m.group(1))
+        return os.path.isfile(resolver) and os.path.isfile(hook_file)
+    return False
+missing = [c for c in commands if not resolves(c, project_dir)]
 print("OK\t%d\t%d\t%s" % (len(commands), len(missing), ",".join(missing)))
 PY
 )"
@@ -143,7 +155,8 @@ echo "[V-2a] CONFIG family fully routed — no .claude/<config-subdir> literal i
 # other hook must reach CONFIG paths through the resolver's exported variable.
 V2A_HITS="$(
   grep -rn '\.claude/\(hooks\|resources\|protocols\|rules\|agents\|skills\|tests\)' "$HOOKS_DIR" 2>/dev/null \
-    | grep -v '/_resolve-config-dir\.sh:' || true
+    | grep -v '/_resolve-config-dir\.sh:' \
+    | grep -v '/_resolve-hook\.sh:' || true
 )"
 V2A_COUNT="$(printf '%s' "$V2A_HITS" | grep -c . || true)"
 if [ "${V2A_COUNT:-0}" -eq 0 ]; then
@@ -345,6 +358,38 @@ if [ -f "$SMOKE" ]; then
   fi
 else
   fail "SMK smoke harness present" "smoke_hooks.sh exists" "missing at $SMOKE"
+fi
+
+# --- EXT: extended per-hook unit tests ---------------------------------------
+echo
+echo "[EXT] Extended unit tests — standalone per-hook test harnesses"
+
+EXT_BOOT_GATE="$TESTS_DIR/test_boot_gate.sh"
+if [ -f "$EXT_BOOT_GATE" ]; then
+  EXT_BG_OUT="$(bash "$EXT_BOOT_GATE" 2>&1)"
+  EXT_BG_STATUS=$?
+  printf '%s\n' "$EXT_BG_OUT" | sed 's/^/    | /'
+  if [ "$EXT_BG_STATUS" -eq 0 ]; then
+    pass "EXT test_boot_gate.sh — enforce-boot-gate + enforce-phase-gate Read/Glob arm"
+  else
+    fail "EXT test_boot_gate.sh" "exit 0" "exit $EXT_BG_STATUS — see output above"
+  fi
+else
+  fail "EXT test_boot_gate.sh present" "file exists" "missing at $EXT_BOOT_GATE"
+fi
+
+EXT_SPAWN="$TESTS_DIR/test_spawn_transparency.sh"
+if [ -f "$EXT_SPAWN" ]; then
+  EXT_SP_OUT="$(bash "$EXT_SPAWN" 2>&1)"
+  EXT_SP_STATUS=$?
+  printf '%s\n' "$EXT_SP_OUT" | sed 's/^/    | /'
+  if [ "$EXT_SP_STATUS" -eq 0 ]; then
+    pass "EXT test_spawn_transparency.sh — enforce-spawn-transparency 16 cases (V1-V6 + I1-I10)"
+  else
+    fail "EXT test_spawn_transparency.sh" "exit 0" "exit $EXT_SP_STATUS — see output above"
+  fi
+else
+  fail "EXT test_spawn_transparency.sh present" "file exists" "missing at $EXT_SPAWN"
 fi
 
 # --- Summary -----------------------------------------------------------------

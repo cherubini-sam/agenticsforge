@@ -10,12 +10,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/session-bootstrap.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ session-bootstrap.sh",
             "timeout": 15000
           },
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/validate-skills.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ validate-skills.sh",
             "timeout": 15000
           }
         ]
@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/validate-tier-json.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ validate-tier-json.sh",
             "timeout": 10000
           }
         ]
@@ -37,7 +37,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-boot-gate.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ enforce-boot-gate.sh",
             "timeout": 10000
           }
         ]
@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/block-destructive.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ block-destructive.sh",
             "timeout": 10000
           }
         ]
@@ -57,7 +57,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-phase-gate.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ enforce-phase-gate.sh",
             "timeout": 10000
           }
         ]
@@ -67,7 +67,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-spawn-transparency.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ enforce-spawn-transparency.sh",
             "timeout": 10000
           }
         ]
@@ -79,32 +79,32 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/create-session-lock.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ create-session-lock.sh",
             "timeout": 5000
           },
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/validate-task-schema.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ validate-task-schema.sh",
             "timeout": 10000
           },
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/validate-plan-schema.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ validate-plan-schema.sh",
             "timeout": 10000
           },
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/validate-intake-schema.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ validate-intake-schema.sh",
             "timeout": 10000
           },
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/format-code.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ format-code.sh",
             "timeout": 30000
           },
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/verify-tests.sh",
+            "command": "bash -c 'R=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/_resolve-hook.sh\"; [ -f \"$R\" ] || exit 0; exec bash \"$R\" \"$@\"' _ verify-tests.sh",
             "timeout": 60000
           }
         ]

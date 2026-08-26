@@ -154,17 +154,40 @@ while IFS="$(printf '\t')" read -r event command; do
 
   # Resolve the runtime ${CLAUDE_PROJECT_DIR} substitution settings.json uses.
   resolved="${command//\$\{CLAUDE_PROJECT_DIR\}/$PROJECT_DIR}"
-  name="$(basename "$resolved")"
 
-  if [ ! -f "$resolved" ]; then
-    printf '%-34s exit=--  verdict=CRASHED   (missing file: %s)\n' "$name" "$resolved"
-    crashed=$((crashed + 1))
-    continue
+  # Detect bash -c wrapper commands (new resolver-indirected pattern).
+  # Extract hook basename from the trailing "_ <hook>.sh" argument.
+  is_wrapper=0
+  hook_basename=""
+  if [[ "$command" == bash\ -c* ]]; then
+    hook_basename="$(printf '%s' "$command" | grep -oE "_[[:space:]]+[A-Za-z0-9_.-]+\.sh$" | grep -oE '[A-Za-z0-9_.-]+\.sh$' || true)"
+    [ -n "$hook_basename" ] && is_wrapper=1
   fi
 
-  : > "$STDERR_TMP"
-  payload_for_event "$event" | bash "$resolved" >/dev/null 2>"$STDERR_TMP"
-  status=$?
+  if [ "$is_wrapper" -eq 1 ]; then
+    name="$hook_basename"
+    # Verify both the resolver and target hook exist.
+    resolver_path="$PROJECT_DIR/.claude/hooks/_resolve-hook.sh"
+    target_path="$PROJECT_DIR/.claude/hooks/$hook_basename"
+    if [ ! -f "$resolver_path" ] || [ ! -f "$target_path" ]; then
+      printf '%-34s exit=--  verdict=CRASHED   (missing file: %s or %s)\n' "$name" "$resolver_path" "$target_path"
+      crashed=$((crashed + 1))
+      continue
+    fi
+    : > "$STDERR_TMP"
+    payload_for_event "$event" | CLAUDE_PROJECT_DIR="$PROJECT_DIR" bash "$resolver_path" "$hook_basename" >/dev/null 2>"$STDERR_TMP"
+    status=$?
+  else
+    name="$(basename "$resolved")"
+    if [ ! -f "$resolved" ]; then
+      printf '%-34s exit=--  verdict=CRASHED   (missing file: %s)\n' "$name" "$resolved"
+      crashed=$((crashed + 1))
+      continue
+    fi
+    : > "$STDERR_TMP"
+    payload_for_event "$event" | bash "$resolved" >/dev/null 2>"$STDERR_TMP"
+    status=$?
+  fi
   err="$(cat "$STDERR_TMP")"
 
   verdict="CRASHED"
